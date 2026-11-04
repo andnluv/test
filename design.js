@@ -1,65 +1,39 @@
-// Independent visual override; never mutates SillyTavern's native theme presets.
+/** Tavern Toolkit: original full theme layer. Does not mutate SillyTavern native theme settings. */
 export const THEMES = Object.freeze({
-  paper: { name: 'Paper · 페이퍼', bg: '#f3efe8', panel: '#fffaf3', text: '#342f2b', accent: '#92745d', border: '#c9b9a7', user: '#ede4d8', ai: '#faf5ed' },
-  midnight: { name: 'Midnight · 미드나잇', bg: '#171c25', panel: '#242b37', text: '#e9e8e5', accent: '#9caec8', border: '#536176', user: '#283549', ai: '#222b37' },
-  sage: { name: 'Sage · 세이지', bg: '#e7ebe4', panel: '#f5f7f1', text: '#33423b', accent: '#738d7c', border: '#b4c2b6', user: '#d9e3d8', ai: '#eef2ea' },
+  paper: {name:'Paper · 페이퍼', description:'장편 소설을 위한 종이와 잉크', bg:'#F3EFE6', surface:'#FFFCF6', raised:'#F8F3E9', text:'#332D28', muted:'#746B62', accent:'#86664E', border:'#D9CDBE', user:'#EAE0D3', ai:'#FFFCF6', shadow:'rgba(59,40,26,.12)', font:'nanummyeongjo'},
+  nocturne: {name:'Nocturne · 녹턴', description:'야간 몰입을 위한 청흑색과 은빛', bg:'#161C25', surface:'#222A36', raised:'#2A3442', text:'#E5E8ED', muted:'#AFBACB', accent:'#A9BEDB', border:'#465366', user:'#29384B', ai:'#202936', shadow:'rgba(0,0,0,.4)', font:'nanumbarun'},
+  studio: {name:'Studio · 스튜디오', description:'정돈된 UI와 부드러운 세이지', bg:'#E6EAE4', surface:'#F9FBF7', raised:'#EFF3EC', text:'#303C35', muted:'#66786D', accent:'#547662', border:'#C4D0C4', user:'#DEE8DE', ai:'#F9FBF7', shadow:'rgba(45,66,48,.12)', font:'nanumgothic'},
 });
 export const FONTS = Object.freeze({
-  pretendard: {name:'Pretendard (시스템에 설치된 경우)', family:'Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif'},
-  noto: {name:'Noto Sans KR (웹폰트)', family:'"Noto Sans KR", "Malgun Gothic", sans-serif', remote:true},
-  nanum: {name:'Nanum Myeongjo (웹폰트)',family:'"Nanum Myeongjo", "Batang", serif',remote:true},
-  gowun: {name:'Gowun Batang (웹폰트)',family:'"Gowun Batang", "Batang", serif',remote:true},
+ nanummyeongjo:{name:'나눔명조 (내장)',family:'"TTK Nanum Myeongjo", Georgia, serif'},
+ nanumbarun:{name:'나눔바른고딕 (내장)',family:'"TTK Nanum Barun", sans-serif'},
+ nanumgothic:{name:'나눔고딕 (내장)',family:'"TTK Nanum Gothic", sans-serif'},
+ system:{name:'기본 시스템 글꼴',family:'system-ui, sans-serif'},
 });
-const FONT_URL = 'https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@400;500;600;700&display=swap';
-const clamp = (n, lo, hi, fallback) => Number.isFinite(Number(n)) ? Math.min(hi, Math.max(lo, Number(n))) : fallback;
-const validHex = (value, fallback) => /^#[0-9a-fA-F]{6}$/.test(value || '') ? value : fallback;
-export function normalizeDesign(raw={}) {
-  const theme = Object.hasOwn(THEMES, raw.theme) ? raw.theme : 'paper';
-  const font = Object.hasOwn(FONTS, raw.font) ? raw.font : 'pretendard';
-  const custom = raw.custom && typeof raw.custom === 'object' ? raw.custom : {};
-  const palette = THEMES[theme];
-  return {
-    theme, font,
-    size: clamp(raw.size, 12, 26, 16),
-    lineHeight: clamp(raw.lineHeight, 1.1, 2.6, 1.7),
-    letterSpacing: clamp(raw.letterSpacing, -1.5, 4, 0),
-    paragraphSpacing: clamp(raw.paragraphSpacing, 0, 28, 10),
-    custom: Object.fromEntries(Object.entries(palette).map(([k,v]) => [k, validHex(custom[k], v)])),
-  };
+const clamp = (v,min,max,fallback) => v!==undefined && v!==null && v!=='' && Number.isFinite(Number(v))? Math.min(max,Math.max(min,Number(v))): fallback;
+const safeHex=(v, fallback)=>typeof v==='string' && /^#[0-9a-fA-F]{6}$/.test(v)?v:fallback;
+const DEFAULT={theme:'paper',font:'nanummyeongjo',size:17,lineHeight:1.85,letterSpacing:0,paragraphSpacing:14,readWidth:780,messageGap:18,custom:{}};
+export function normalizeDesign(raw={}){
+ const theme=Object.hasOwn(THEMES,raw.theme)?raw.theme:(raw.theme==='midnight'?'nocturne':raw.theme==='sage'?'studio':'paper');
+ const legacyFont={pretendard:'nanumgothic',noto:'nanumgothic',nanum:'nanummyeongjo',gowun:'nanummyeongjo'};
+ const candidate=legacyFont[raw.font]||raw.font;
+ // Migrating old settings defaults to the typography specified by the new complete theme.
+ const font=Object.hasOwn(FONTS,candidate)?candidate:THEMES[theme].font;
+ const palette=THEMES[theme];const custom={};
+ for(const key of ['bg','surface','raised','text','muted','accent','border','user','ai'])custom[key]=safeHex(raw.custom?.[key],palette[key]);
+ return {theme,font,size:clamp(raw.size,13,23,DEFAULT.size),lineHeight:clamp(raw.lineHeight,1.4,2.4,DEFAULT.lineHeight),letterSpacing:clamp(raw.letterSpacing,-.6,1.8,DEFAULT.letterSpacing),paragraphSpacing:clamp(raw.paragraphSpacing,0,32,DEFAULT.paragraphSpacing),readWidth:clamp(raw.readWidth,520,1100,DEFAULT.readWidth),messageGap:clamp(raw.messageGap,6,42,DEFAULT.messageGap),custom};
 }
-let fontLink;
-export function applyDesign(enabled, raw) {
-  const styleId = 'ttk-design-runtime';
-  document.getElementById(styleId)?.remove();
-  if (!enabled) return;
-  const d = normalizeDesign(raw);
-  const color = d.custom;
-  if (FONTS[d.font].remote && !fontLink) {
-    fontLink = document.createElement('link');
-    fontLink.rel = 'stylesheet';
-    fontLink.href = FONT_URL;
-    fontLink.id = 'ttk-google-fonts';
-    document.head.append(fontLink);
-  }
-  const rules = `
-  /* Scoped to SillyTavern chat and selected main UI. Does not write to native theme settings. */
-  body { --ttk-bg:${color.bg}; --ttk-panel:${color.panel}; --ttk-text:${color.text}; --ttk-accent:${color.accent}; --ttk-border:${color.border}; }
-  body #chat, body #sheld, body #chat_container { background-color:var(--ttk-bg) !important; color:var(--ttk-text) !important; }
-  body #chat .mes, body #chat .mes .mes_text, body #send_textarea {
-    font-family:${FONTS[d.font].family} !important;
-    color:var(--ttk-text) !important;
-  }
-  body #chat .mes .mes_text, body #chat .mes .mes_text p, body #send_textarea {
-    font-size:${d.size}px !important; line-height:${d.lineHeight} !important; letter-spacing:${d.letterSpacing}px !important;
-  }
-  body #chat .mes .mes_text p { margin-bottom:${d.paragraphSpacing}px !important; }
-  body #chat .mes { border-color:var(--ttk-border) !important; }
-  body #chat .mes[is_user="true"] { background-color:${color.user} !important; }
-  body #chat .mes[is_user="false"] { background-color:${color.ai} !important; }
-  body #send_form, body #send_textarea { background-color:var(--ttk-panel) !important; border-color:var(--ttk-border) !important; }
-  body #send_form button, body #send_form .fa-solid { color:var(--ttk-accent) !important; }
-  `;
-  const style = document.createElement('style'); style.id=styleId; style.textContent=rules;
-  document.head.append(style);
+export function selectTheme(raw,id){const theme=THEMES[id];if(!theme)return normalizeDesign(raw);return normalizeDesign({...raw,theme:id,font:theme.font,custom:{}});}
+const STYLE_ID='ttk-full-theme-runtime';
+export function teardownDesign(){document.getElementById(STYLE_ID)?.remove();document.documentElement.removeAttribute('data-ttk-theme');}
+export function applyDesign(enabled,raw){
+ teardownDesign();if(!enabled)return;
+ const d=normalizeDesign(raw),p=d.custom;
+ const root=document.documentElement;
+ root.dataset.ttkTheme=d.theme;
+ const vars={...p,shadow:THEMES[d.theme].shadow,font:FONTS[d.font].family,size:`${d.size}px`,line:d.lineHeight,tracking:`${d.letterSpacing}px`,para:`${d.paragraphSpacing}px`,read:`${d.readWidth}px`,gap:`${d.messageGap}px`};
+ const node=document.createElement('style');node.id=STYLE_ID;
+ const safe=Object.entries(vars).map(([k,v])=>`--ttk-${k}:${v};`).join('\n');
+ node.textContent=`html[data-ttk-theme] {${safe}}`;
+ document.head.append(node);
 }
-export function teardownDesign(){ document.getElementById('ttk-design-runtime')?.remove(); }
