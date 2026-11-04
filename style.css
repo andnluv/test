@@ -846,3 +846,50 @@ html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
   .drawer-toggle::after {
   content:none!important;
 }
+
+/* v0.3.13 — Porcelain top-rail geometry is the shared layout standard.
+   Only the interactive icon/toggle is targeted, never .drawer or panel surfaces.
+   Palette and icon colors continue to come from the selected theme. */
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings) .drawer-toggle {
+  box-sizing:border-box!important;
+  position:relative!important;
+  min-height:36px!important;
+  height:36px!important;
+  padding:0!important;
+  margin:0!important;
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:center!important;
+  align-items:center!important;
+  vertical-align:middle!important;
+  line-height:1!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings) .drawer-toggle > .drawer-icon {
+  position:relative!important;
+  box-sizing:border-box!important;
+  display:inline-flex!important;
+  width:32px!important;
+  height:32px!important;
+  min-width:32px!important;
+  min-height:32px!important;
+  flex:0 0 32px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  margin:0!important;
+  vertical-align:middle!important;
+  line-height:1!important;
+  transform:none!important;
+  top:auto!important;
+  left:auto!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings) .drawer-toggle > .drawer-icon::before {
+  vertical-align:middle!important;
+}
