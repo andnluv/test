@@ -1,7 +1,7 @@
 /** Independent, display-only localization for native SillyTavern Prompt Manager names.
  * No preset or connection profile is ever switched or modified.
  */
-export const PROMPT_NAME_SELECTOR='[class*="prompt_manager_prompt_name"][data-pm-name]';
+export const PROMPT_NAME_SELECTOR='[data-pm-name],[data-pm-display-name],[class*="prompt_manager_prompt_name"],.prompt_manager_prompt_name,.prompt-manager-prompt-name';
 export const DEFAULT_PROMPT_TRANSLATION=Object.freeze({profileId:'',autoTranslate:true,cache:{}});
 const MAX_ITEMS=600;
 export function normalizePromptTranslation(raw={}){
@@ -41,11 +41,31 @@ function candidates(element){
  const nodes=[...element.querySelectorAll(LABEL_SELECTOR)];
  return nodes.filter(n=>!n.closest('button') && n.closest(PROMPT_NAME_SELECTOR)===element);
 }
+function sourceFromElement(element){
+ const attrs=['data-pm-name','data-pm-display-name','title','aria-label'];
+ for(const attr of attrs){
+  const value=(element.getAttribute?.(attr)||'').trim();
+  if(value)return value;
+ }
+ for(const label of candidates(element)){
+  const text=textNodesOf(label).map(n=>n.nodeValue||'').join(' ').replace(/\s+/g,' ').trim();
+  if(text)return text;
+  const fallback=(label.textContent||'').replace(/\s+/g,' ').trim();
+  if(fallback)return fallback;
+ }
+ const loose=textNodesOf(element).map(n=>n.nodeValue||'').join(' ').replace(/\s+/g,' ').trim();
+ return loose;
+}
 export function getPromptLabels(root=document){
  const elements=[];
  if(root.matches?.(PROMPT_NAME_SELECTOR))elements.push(root);
  elements.push(...root.querySelectorAll(PROMPT_NAME_SELECTOR));
- return elements.map(element=>({element,source:(element.getAttribute('data-pm-name')||'').trim()})).filter(x=>x.source);
+ const seen=new Set();
+ return elements.map(element=>({element,source:sourceFromElement(element)})).filter(x=>{
+  if(!x.source||seen.has(x.element))return false;
+  seen.add(x.element);
+  return true;
+ });
 }
 // Hide every native copy of the name, retain its exact text nodes for restoration.
 // Show exactly one dedicated label, leaving non-name icons and all event listeners intact.
@@ -125,24 +145,29 @@ export class PromptNameTranslator{
   const config=this.getSettings();const profile=config.profileId;
   if(!profile)return;
   if(!this.getProfiles().some(p=>p.id===profile)){this.onStatus('저장된 번역 프로필을 선택해 주세요.');return;}
-  const missing=[...new Set(getPromptLabels().map(p=>p.source).filter(x=>!config.cache[x]&&!/^[\d\W]+$/u.test(x)))].slice(0,MAX_ITEMS);
-  if(!missing.length){this.onStatus('현재 표시된 토글 이름은 모두 번역되었거나 번역 대상이 아닙니다.');return;}
   this.running=true;const generation=this.runId;const controller=new AbortController();this.controller=controller;
   try{
-   const service=await this.loadService();let completed=0;
-   for(const source of missing){
-    if(!this.enabled||generation!==this.runId||controller.signal.aborted||this.getSettings().profileId!==profile)break;
-    this.onStatus(`토글명 번역 중 · ${completed+1}/${missing.length}`);
-    try{
-     const request=[{role:'system',content:'Translate only the following user-interface prompt toggle label into natural Korean. Return one short Korean label only. Do not explain, add punctuation, or translate placeholders such as {{user}}, {{char}}, IDs, or numbers.'},{role:'user',content:source}];
-     const result=await service.sendRequest(profile,request,120,{stream:false,signal:controller.signal,includePreset:false,includeInstruct:false});
-     if(!this.enabled||generation!==this.runId||controller.signal.aborted)break;
-     const value=cleanTranslation(result?.content,source);
-     if(value){this.getSettings().cache[source]=value;this.save();this.applyCached();this.onCacheChanged();}
-    }catch(error){if(controller.signal.aborted)break;console.warn('[Tavern Toolkit] prompt translation:',source,error);this.onStatus(`번역 오류 · ${source} (나머지 진행)`);}
-    completed++;
+   const service=await this.loadService();let completed=0;const processed=new Set();let pass=0;
+   while(this.enabled&&generation===this.runId&&!controller.signal.aborted&&pass<8){
+    const missing=[...new Set(getPromptLabels().map(p=>p.source).filter(x=>x&&!config.cache[x]&&!processed.has(x)&&!/^[\d\W]+$/u.test(x)))].slice(0,MAX_ITEMS-completed);
+    if(!missing.length)break;
+    for(const source of missing){
+      if(!this.enabled||generation!==this.runId||controller.signal.aborted||this.getSettings().profileId!==profile)break;
+      this.onStatus(`토글명 번역 중 · ${completed+1}개째`);
+      processed.add(source);
+      try{
+        const request=[{role:'system',content:'Translate only the following user-interface prompt toggle label into natural Korean. Return one short Korean label only. Do not explain, add punctuation, or translate placeholders such as {{user}}, {{char}}, IDs, or numbers.'},{role:'user',content:source}];
+        const result=await service.sendRequest(profile,request,120,{stream:false,signal:controller.signal,includePreset:false,includeInstruct:false});
+        if(!this.enabled||generation!==this.runId||controller.signal.aborted)break;
+        const value=cleanTranslation(result?.content,source);
+        if(value){this.getSettings().cache[source]=value;this.save();this.applyCached();this.onCacheChanged();}
+      }catch(error){if(controller.signal.aborted)break;console.warn('[Tavern Toolkit] prompt translation:',source,error);this.onStatus(`번역 오류 · ${source} (나머지 진행)`);}
+      completed++;
+    }
+    pass++;
+    if(this.enabled&&generation===this.runId&&!controller.signal.aborted)await new Promise(r=>setTimeout(r,80));
    }
-   if(this.enabled&&generation===this.runId){const stillMissing=[...new Set(getPromptLabels().map(p=>p.source).filter(x=>!this.getSettings().cache[x]))];this.onStatus(stillMissing.length?`요청 ${completed}개 완료 · 아직 미번역 ${stillMissing.length}개 (원문 표시)`:'표시된 토글 이름 번역 완료');}
+   if(this.enabled&&generation===this.runId){const stillMissing=[...new Set(getPromptLabels().map(p=>p.source).filter(x=>x&&!this.getSettings().cache[x]&&!/^[\d\W]+$/u.test(x)))];this.onStatus(stillMissing.length?`요청 ${completed}개 완료 · 아직 미번역 ${stillMissing.length}개 (원문 표시)`:'표시된 토글 이름 번역 완료');}
   }catch(error){this.onStatus(`번역 연결 오류 · ${error.message}`);console.warn('[Tavern Toolkit]',error);}
   finally{this.running=false;if(this.controller===controller)this.controller=null;}
  }

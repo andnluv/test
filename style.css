@@ -470,11 +470,60 @@ html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-paper-plane::before {
   display:inline!important;position:static!important;float:none!important;
   font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;
   font-style:inherit!important;line-height:inherit!important;color:inherit!important;
-  opacity:1!important;visibility:visible!important;white-space:normal!important;
-  text-shadow:none!important;filter:none!important;overflow-wrap:anywhere!important;
+  opacity:1!important;visibility:visible!important;white-space:normal!important;word-break:keep-all!important;overflow-wrap:normal!important;writing-mode:horizontal-tb!important;
+  text-shadow:none!important;filter:none!important;
 }
 /* Cover ST versions that emit the native name as a generated pseudo-element. */
 [data-pm-name].ttk-prompt-localized::before,
 [data-pm-name].ttk-prompt-localized::after {
   content:none!important;
+}
+[data-pm-name].ttk-prompt-localized :is(a.prompt-manager-inspect-action,span[title],.prompt_manager_prompt_name,.prompt-manager-prompt-name)::before,
+[data-pm-name].ttk-prompt-localized :is(a.prompt-manager-inspect-action,span[title],.prompt_manager_prompt_name,.prompt-manager-prompt-name)::after {
+  content:none!important;
+}
+[data-pm-name].ttk-prompt-localized .ttk-prompt-name-display {
+  display:inline-block!important;
+  max-width:100%!important;
+  vertical-align:top!important;
+}
+
+/* v0.3.3: keep top navigation glyphs visible on light/dark theme surfaces.
+ * Earlier CSS masks were tinted with currentColor; native icon styles can supply
+ * white/transparent colors on pale surfaces. Use explicit theme ink and keep
+ * the mask tint separate from interactive button backgrounds. */
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.drawer-icon,.menu_button,.fa,.fas,.far,.fa-solid,.fa-regular,[class*="fa-"]) {
+  color:var(--ttk-text)!important;
+  -webkit-text-fill-color:var(--ttk-text)!important;
+  opacity:1!important;
+  visibility:visible!important;
+  filter:none!important;
+  text-shadow:none!important;
+}
+html[data-ttk-theme][data-ttk-icon-tone=accent]
+  :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.drawer-icon,.menu_button,.fa,.fas,.far,.fa-solid,.fa-regular,[class*="fa-"]) {
+  color:var(--ttk-accent)!important;
+  -webkit-text-fill-color:var(--ttk-accent)!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.fa,.fas,.fa-solid)[class*="fa-"]::before {
+  color:inherit!important;
+  -webkit-text-fill-color:currentColor!important;
+  opacity:1!important;
+  filter:none!important;
+}
+/* Keep custom SVG mask icons distinguishable regardless of their inherited
+ * FontAwesome color, while leaving icon paths and click handlers untouched. */
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.fa-sliders,.fa-plug,.fa-font,.fa-book,.fa-user-gear,.fa-image,
+      .fa-cubes,.fa-face-smile,.fa-address-card)::before {
+  background-color:var(--ttk-text)!important;
+}
+html[data-ttk-theme][data-ttk-icon-tone=accent]
+  :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.fa-sliders,.fa-plug,.fa-font,.fa-book,.fa-user-gear,.fa-image,
+      .fa-cubes,.fa-face-smile,.fa-address-card)::before {
+  background-color:var(--ttk-accent)!important;
 }
