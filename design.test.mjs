@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+const raw=readFileSync(new URL('../modules/design.js',import.meta.url),'utf8');
+const moduleUrl='data:text/javascript;base64,'+Buffer.from(raw).toString('base64');
+const {normalizeDesign,THEMES,FONTS}=await import(moduleUrl);
+assert.equal(Object.keys(THEMES).length,3);
+assert.equal(Object.keys(FONTS).length,4);
+assert.equal(normalizeDesign({theme:'invalid'}).theme,'paper');
+assert.equal(normalizeDesign({size:999}).size,26);
+assert.equal(normalizeDesign({size:0}).size,12);
+assert.equal(normalizeDesign({letterSpacing:-99}).letterSpacing,-1.5);
+assert.equal(normalizeDesign({custom:{text:'red',bg:'#123456'}}).custom.text,THEMES.paper.text);
+assert.equal(normalizeDesign({custom:{bg:'#123456'}}).custom.bg,'#123456');
+console.log('design normalization: PASS');
