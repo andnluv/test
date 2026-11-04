@@ -1,10 +1,25 @@
-/* Tavern Toolkit 0.2.0 — three complete, original UI themes.
+/* OFL font stylesheets served by Google Fonts. Fonts themselves are not packaged here. */
+@import url('https://fonts.googleapis.com/css2?family=Hahmlet:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Zen+Old+Mincho:wght@400;500;700&display=swap');
+/* Mona12 by MonadABXY, OFL 1.1; hosted on the project's documented CDN. */
+@import url('https://cdn.jsdelivr.net/gh/MonadABXY/mona-font/web/mona.css');
+
+/* Additional freely available typefaces listed by Noonnu; remotely loaded, not bundled. */
+@font-face{font-family:'TTK Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'TTK Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'TTK Noonnu Basic Gothic';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noon-2410@1.0/NoonnuBasicGothicRegular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'TTK Maru Buri';src:url('https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'TTK Maru Buri';src:url('https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:'TTK Ridi Batang';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');font-weight:400;font-display:swap}
+@font-face{font-family:'TTK Seoul Hangang';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulHangangM.woff') format('woff');font-weight:400;font-display:swap}
+@font-face{font-family:'TTK Yeonseong';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMYEONSUNG.woff') format('woff');font-weight:400;font-display:swap}
+
+/* Tavern Toolkit 0.2.1 — three complete, original UI themes.
    Every theme selector is gated by html[data-ttk-theme]. OFF restores the native CSS.
    This stylesheet never assigns native SillyTavern theme variables or writes theme files. */
 @font-face{font-family:'TTK Nanum Gothic';src:url('./fonts/NanumGothic.ttf') format('truetype');font-display:swap}
 @font-face{font-family:'TTK Nanum Barun';src:url('./fonts/NanumBarunGothic.ttf') format('truetype');font-display:swap}
 @font-face{font-family:'TTK Nanum Myeongjo';src:url('./fonts/NanumMyeongjo.ttf') format('truetype');font-display:swap}
-/* Extension settings — theme-neutral and intentionally scoped. */
+/* Extension settings — isolated from the native UI styles. */
 #ttk-panel{border:1px solid var(--SmartThemeBorderColor,#7777);border-radius:9px;margin:8px 0;background:transparent;color:inherit;overflow:hidden;font-size:13px}
 #ttk-panel *{box-sizing:border-box}
 #ttk-panel summary{cursor:pointer;list-style:none}
@@ -35,7 +50,7 @@
 #ttk-panel .ttk-theme-swatch-chip{width:28px;height:5px;border-radius:5px;background:var(--ttk-sample-accent)}
 #ttk-panel .ttk-field{display:grid;gap:6px}
 #ttk-panel .ttk-field select{width:100%;padding:7px;border-radius:6px;background:transparent;color:inherit;border:1px solid rgba(128,128,128,.35)}
-#ttk-panel .ttk-field select option{color:#222;background:#fafafa}
+#ttk-panel .ttk-field select option{color:var(--ttk-text,#222);background:var(--ttk-surface,#fafafa)}
 #ttk-panel .ttk-slider-grid{display:grid;gap:11px}
 #ttk-panel .ttk-slider{display:grid;gap:5px}
 #ttk-panel .ttk-slider-label{display:flex;justify-content:space-between;gap:6px}
@@ -46,8 +61,16 @@
 #ttk-panel .ttk-color-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:10px 0}
 #ttk-panel .ttk-color-field{display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:11px}
 #ttk-panel input[type=color]{width:42px;height:29px;padding:2px;cursor:pointer}
-#ttk-panel .ttk-mini-preview{background:var(--preview-bg,#fff);color:var(--preview-text,#333);border:1px solid var(--preview-border,#ccc);border-radius:8px;padding:15px;line-height:1.8}
-#ttk-panel .ttk-mini-preview p{margin:8px 0 0}
+#ttk-panel .ttk-mini-preview{background:var(--pv-bg,#fff);color:var(--pv-text,#333);border:1px solid var(--pv-border,#ccc);border-radius:10px;padding:12px;display:grid;gap:10px;min-width:0;isolation:isolate;}
+#ttk-panel .ttk-preview-header{font-size:11px;font-weight:600;color:var(--pv-muted,#777)!important}
+#ttk-panel .ttk-preview-message{background:var(--pv-ai,#fff);border:1px solid var(--pv-border,#ccc);border-radius:10px;padding:13px;min-width:0;box-shadow:0 2px 8px #00000012;color:var(--pv-text,#333)!important;font-family:var(--pv-font,serif)!important;font-size:var(--pv-size,17px)!important;line-height:var(--pv-line,1.8)!important;letter-spacing:var(--pv-tracking,0px)!important}
+#ttk-panel .ttk-preview-message .ttk-preview-name{display:block;color:var(--pv-accent,#765)!important;font-size:12px!important;line-height:1.5!important;margin-bottom:8px}
+#ttk-panel .ttk-preview-message p{padding:0!important;margin:0 0 var(--pv-para,14px)!important;background:transparent!important;color:var(--pv-text,#333)!important;line-height:inherit!important;letter-spacing:inherit!important;font-size:inherit!important;box-shadow:none!important;border:0!important}
+#ttk-panel .ttk-preview-message p:last-child{margin-bottom:0!important}
+#ttk-panel .ttk-preview-dialogue{font-family:var(--pv-dialogue-font,serif)!important}
+#ttk-panel .ttk-mini-preview[data-theme=paper] .ttk-preview-message{border:0;border-bottom:1px solid var(--pv-border);border-radius:0;box-shadow:none;background:transparent}
+#ttk-panel .ttk-mini-preview[data-theme=nocturne] .ttk-preview-message{border-left:3px solid var(--pv-accent);border-radius:4px 12px 12px 4px}
+#ttk-panel .ttk-mini-preview[data-theme=studio] .ttk-preview-message{border-radius:15px}
 #ttk-panel .ttk-actions{display:flex;flex-wrap:wrap;gap:6px}
 /* Full-theme tokens: separate namespaces; don't contaminate SillyTavern's saved theme. */
 html[data-ttk-theme] body{background:var(--ttk-bg)!important;color:var(--ttk-text)!important}
@@ -56,15 +79,26 @@ html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings,#left-nav-p
 html[data-ttk-theme] :is(#left-nav-panel,#right-nav-panel,.drawer-content,.popup,.dialogue_popup,.ui-dialog,.floating_panel,.floating-panel){box-shadow:0 8px 28px var(--ttk-shadow)!important}
 html[data-ttk-theme] :is(.drawer-header,.drawer-header-title,.drawer-icon,.menu_button,.fa-solid,.fa-regular,.fa){color:var(--ttk-text)}
 html[data-ttk-theme] :is(.drawer-header,.drawer-header-title,.inline-drawer-header,.inline-drawer-content,.settings-section,.settings-category,.settingsBlock){border-color:var(--ttk-border)!important}
+/* Existing inline extension headers used black/translucent gradients that survived the original palette override. */
+html[data-ttk-theme] :is(#extensions_settings,#extensions_settings2,#left-nav-panel,#right-nav-panel) :is(.inline-drawer-header,.inline-drawer-header.inline-drawer-toggle,.inline-drawer-content,.standoutHeader,.settingsBlock,.settings-section,.settings-category){background:var(--ttk-surface)!important;background-image:none!important;color:var(--ttk-text)!important;border-color:var(--ttk-border)!important;box-shadow:none!important;text-shadow:none!important}
+html[data-ttk-theme] :is(#extensions_settings,#extensions_settings2) .inline-drawer-header{border:1px solid var(--ttk-border)!important;border-radius:8px!important;margin-block:4px!important;padding:7px 10px!important}
+html[data-ttk-theme] :is(#extensions_settings,#extensions_settings2) .inline-drawer-header :is(span,strong,i,svg){color:inherit!important}
+html[data-ttk-theme] :is(#extensions_settings,#extensions_settings2) .inline-drawer-content{background:var(--ttk-raised)!important;border:1px solid var(--ttk-border)!important;border-radius:8px!important}
+html[data-ttk-theme] :is(.inline-drawer-header,.standoutHeader)::before,html[data-ttk-theme] :is(.inline-drawer-header,.standoutHeader)::after{filter:none!important}
+
 /* Conversation canvas: full palette including both chat types. */
 html[data-ttk-theme] #chat{background:var(--ttk-bg)!important;color:var(--ttk-text)!important}
-html[data-ttk-theme] #chat .mes{background:var(--ttk-ai)!important;color:var(--ttk-text)!important;border:1px solid var(--ttk-border)!important;border-radius:13px!important;margin:var(--ttk-gap) auto!important;max-width:min(100%,calc(var(--ttk-read) + 125px));padding:12px 17px!important;box-shadow:0 3px 10px var(--ttk-shadow)!important}
+html[data-ttk-theme] #chat .mes{background:var(--ttk-ai)!important;color:var(--ttk-text)!important;border:1px solid var(--ttk-border)!important;border-radius:13px!important;margin:12px auto!important;max-width:100%;padding:12px 17px!important;box-shadow:0 3px 10px var(--ttk-shadow)!important}
 html[data-ttk-theme] #chat .mes[is_user="true"]{background:var(--ttk-user)!important}
 html[data-ttk-theme] #chat .mes[is_user="false"]{background:var(--ttk-ai)!important}
 html[data-ttk-theme] #chat :is(.mes_text,.mes_text p,.mes_text li,.mes_text blockquote){font-family:var(--ttk-font)!important;font-size:var(--ttk-size)!important;line-height:var(--ttk-line)!important;letter-spacing:var(--ttk-tracking)!important;color:var(--ttk-text)!important;overflow-wrap:anywhere}
-html[data-ttk-theme] #chat .mes_text{max-width:var(--ttk-read);margin-inline:auto}
+html[data-ttk-theme] #chat .mes_text{max-width:100%;margin-inline:0}
 html[data-ttk-theme] #chat .mes_text p{margin:0 0 var(--ttk-para)!important}
 html[data-ttk-theme] #chat .mes_text p:last-child{margin-bottom:0!important}
+/* Separate dialogue and narration faces, wrapping only complete quoted text segments. */
+html[data-ttk-theme] #chat .mes_text .ttk-dialogue{font-family:var(--ttk-dialogueFont)!important;font-size:inherit!important;font-style:inherit!important;letter-spacing:inherit!important}
+html[data-ttk-theme] #chat .mes_text q{font-family:var(--ttk-dialogueFont)!important}
+
 html[data-ttk-theme] #chat :is(.name_text,.ch_name,.mes_name){color:var(--ttk-accent)!important;font-weight:700!important}
 html[data-ttk-theme] #chat :is(.mesIDDisplay,.mes_timer,.tokenCounterDisplay,.mes_edit_buttons,.mes_button){color:var(--ttk-muted)!important}
 html[data-ttk-theme] #chat .mes_text :is(blockquote,pre){background:var(--ttk-raised)!important;border-left:2px solid var(--ttk-accent)!important;border-radius:4px;padding:8px 12px}
@@ -82,8 +116,8 @@ html[data-ttk-theme] :is(.menu_button,button,input,textarea,select):focus-visibl
 html[data-ttk-theme] :is(.selected,.selected_option,.active,.highlighted){border-color:var(--ttk-accent)!important}
 /* The three themes have different layouts rather than only different palettes. */
 /* Paper: open literary page, no repeated card boxes for assistant narrative. */
-html[data-ttk-theme=paper] #chat .mes{border:0!important;border-bottom:1px solid var(--ttk-border)!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;max-width:min(100%,calc(var(--ttk-read) + 150px));padding:17px 19px 22px!important}
-html[data-ttk-theme=paper] #chat .mes[is_user=true]{background:var(--ttk-user)!important;border:1px solid var(--ttk-border)!important;border-radius:8px!important;max-width:min(95%,calc(var(--ttk-read) + 90px))}
+html[data-ttk-theme=paper] #chat .mes{border:0!important;border-bottom:1px solid var(--ttk-border)!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;max-width:100%;padding:17px 19px 22px!important}
+html[data-ttk-theme=paper] #chat .mes[is_user=true]{background:var(--ttk-user)!important;border:1px solid var(--ttk-border)!important;border-radius:8px!important;max-width:95%}
 html[data-ttk-theme=paper] :is(#top-bar,#top-settings-holder){border-bottom:1px solid var(--ttk-border)!important}
 html[data-ttk-theme=paper] #send_form{border-top:1px solid var(--ttk-border)!important;box-shadow:0 -8px 24px var(--ttk-shadow)!important}
 /* Nocturne: restrained side-accent and low-glare cards. */
@@ -92,7 +126,7 @@ html[data-ttk-theme=nocturne] #chat .mes[is_user=true]{border-left-color:var(--t
 html[data-ttk-theme=nocturne] #chat .mes_text :is(em,i){color:#C4CEE0}
 /* Studio: softened application cards, crisp sans serif layout. */
 html[data-ttk-theme=studio] #chat .mes{border-radius:16px!important;box-shadow:0 4px 17px var(--ttk-shadow)!important}
-html[data-ttk-theme=studio] #chat .mes[is_user=true]{max-width:min(94%,calc(var(--ttk-read) + 90px))}
+html[data-ttk-theme=studio] #chat .mes[is_user=true]{max-width:94%}
 html[data-ttk-theme=studio] :is(.drawer-content,.floating_panel,.popup){border-radius:12px!important}
 @media(max-width:700px){
  html[data-ttk-theme] #chat .mes{max-width:100%!important;margin:8px 3px!important;padding:10px 12px!important}
@@ -101,3 +135,22 @@ html[data-ttk-theme=studio] :is(.drawer-content,.floating_panel,.popup){border-r
  #ttk-panel .ttk-color-grid{grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){html[data-ttk-theme] *{scroll-behavior:auto!important}}
+
+/* Extension manager itself always follows the selected palette, never inherited dark text/shading. */
+html[data-ttk-theme] #ttk-panel{background:var(--ttk-surface)!important;color:var(--ttk-text)!important;border-color:var(--ttk-border)!important}
+html[data-ttk-theme] #ttk-panel :is(.ttk-panel-summary,.ttk-section-summary){background:var(--ttk-raised)!important;color:var(--ttk-text)!important}
+html[data-ttk-theme] #ttk-panel .ttk-settings-body,html[data-ttk-theme] #ttk-panel .ttk-controls{background:var(--ttk-surface)!important;color:var(--ttk-text)!important}
+html[data-ttk-theme] #ttk-panel :is(.ttk-button,.ttk-field select){background:var(--ttk-raised)!important;color:var(--ttk-text)!important;border-color:var(--ttk-border)!important}
+html[data-ttk-theme] #ttk-panel .ttk-theme-swatch{background:var(--ttk-sample-bg)!important}
+html[data-ttk-theme] #ttk-panel .ttk-mini-preview{background:var(--pv-bg)!important;color:var(--pv-text)!important;border-color:var(--pv-border)!important}
+html[data-ttk-theme] #ttk-panel .ttk-preview-message{background:var(--pv-ai)!important;color:var(--pv-text)!important;font-family:var(--pv-font)!important;font-size:var(--pv-size)!important;line-height:var(--pv-line)!important;letter-spacing:var(--pv-tracking)!important;border-color:var(--pv-border)!important}
+html[data-ttk-theme] #ttk-panel .ttk-preview-dialogue{font-family:var(--pv-dialogue-font)!important}
+html[data-ttk-theme] #ttk-panel .ttk-mini-preview[data-theme=paper] .ttk-preview-message{background:transparent!important;border:0!important;border-bottom:1px solid var(--pv-border)!important;box-shadow:none!important;border-radius:0!important}
+html[data-ttk-theme] #ttk-panel .ttk-mini-preview[data-theme=nocturne] .ttk-preview-message{border-left:3px solid var(--pv-accent)!important}
+
+#ttk-panel .ttk-accent-chip-wrap{display:grid;gap:8px;padding:4px 0 12px;font-size:12px}
+#ttk-panel .ttk-accent-chips{display:flex;flex-wrap:wrap;gap:7px}
+#ttk-panel .ttk-accent-chip{width:28px;height:28px;padding:0;background:var(--ttk-chip-color)!important;border:2px solid rgba(128,128,128,.35)!important;border-radius:50%!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.55)!important}
+#ttk-panel .ttk-accent-chip:focus-visible{outline:2px solid var(--ttk-text,#333)!important;outline-offset:2px}
+
+#ttk-panel .ttk-font-status{font-size:11px;line-height:1.5;opacity:.8}
