@@ -40,3 +40,21 @@ test('reasoning controls theme background and text instead of gray',()=>{
  assert.match(sheet,/background:var\(--ttk-raised\)!important/);
  assert.match(sheet,/color:var\(--ttk-text\)!important/);
 });
+
+
+test('dialogue colour is independent per theme and survives switching',()=>{
+  const start=normalizeDesign({theme:'paper',dialogueColors:{paper:'#123456',porcelain:'#ABCDEF'},font:'ridibatang',dialogueFont:'pretendard'});
+  const switched=selectTheme(start,'porcelain');
+  assert.equal(switched.dialogueColors.paper,'#123456');
+  assert.equal(switched.dialogueColors.porcelain,'#ABCDEF');
+  assert.equal(switched.dialogueFont,'pretendard');
+  assert.equal(selectTheme(switched,'paper').dialogueColors.paper,'#123456');
+});
+
+test('old default Paper palette upgrades to brighter Paper, custom palettes stay unchanged', () => {
+  const previous={bg:'#F3EFE6',surface:'#FFFCF6',raised:'#F8F3E9',text:'#332D28',muted:'#746B62',accent:'#86664E',border:'#D9CDBE',user:'#EAE0D3',ai:'#FFFCF6'};
+  const upgraded=normalizeDesign({theme:'paper',palettes:{paper:previous}});
+  assert.equal(upgraded.palettes.paper.bg,'#FAF9F6');
+  const customized=normalizeDesign({theme:'paper',palettes:{paper:{...previous,bg:'#EEEEEE'}}});
+  assert.equal(customized.palettes.paper.bg,'#EEEEEE');
+});

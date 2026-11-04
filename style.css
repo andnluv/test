@@ -298,3 +298,169 @@ html[data-ttk-theme] #chat .mes_reasoning{
  html[data-ttk-theme="paper"] #chat .mes,
  html[data-ttk-theme="studio"] #chat .mes{width:100%!important;max-width:100%!important;margin:8px 0!important;}
 }
+
+/* 0.2.8: Palette chips represent one key pigment, not a fragile multicolor gradient. */
+#ttk-panel .ttk-palette-chip-swatch {
+  display:block!important;width:24px!important;height:24px!important;
+  margin:2px auto 3px!important;border-radius:50%!important;
+  background-image:none!important;box-shadow:none!important;
+  border:2px solid var(--ttk-surface,#fff)!important;
+  outline:1px solid var(--ttk-border,#adb5bf)!important;
+}
+#ttk-panel .ttk-palette-chip {align-items:center!important;justify-content:center!important;min-height:54px}
+#ttk-panel .ttk-dialogue-color-row {padding:6px 0;border-top:1px solid var(--ttk-border,#bbb)}
+/* Keep dialogue colour independent of accent, font face, and the underlying theme. */
+html[data-ttk-theme] #chat .mes_text .ttk-dialogue,
+html[data-ttk-theme] #chat .mes_text .ttk-dialogue *,
+html[data-ttk-theme] #chat .mes_text q,
+html[data-ttk-theme] #chat .mes_text q * {color:var(--ttk-dialogue)!important;-webkit-text-fill-color:var(--ttk-dialogue)!important}
+#ttk-panel .ttk-mini-preview .ttk-preview-message .ttk-preview-dialogue {color:var(--pv-dialogue-color)!important;-webkit-text-fill-color:var(--pv-dialogue-color)!important}
+/* Menu coverage: only common SillyTavern widgets; preserve interaction and native disabled semantics.
+   Do not blanket force all descendants to white, and do not recolour SVG fills. */
+html[data-ttk-theme] :is(#world_popup,#world_info,#world_info_settings,#extensions_settings,#extensions_settings2,
+  #api_settings,#advanced-formatting,#backgrounds,#character_popup,#top-settings-holder,
+  #left-nav-panel,#right-nav-panel,.popup,.dialogue_popup,.ui-dialog) {
+  color:var(--ttk-text)!important;
+}
+html[data-ttk-theme] :is(#world_popup,#world_info,#world_info_settings,#extensions_settings,#extensions_settings2,
+  #api_settings,#advanced-formatting,#backgrounds,#character_popup,#left-nav-panel,#right-nav-panel,.popup,.dialogue_popup,.ui-dialog)
+  :is(select,textarea,input[type=text],input[type=search],input[type=number],input[type=url],.select2-selection,.select2-selection__rendered,.dropdown,
+     .multi-select,.multiselect,.text_pole,.menu_button) {
+  background-color:var(--ttk-surface)!important;background-image:none!important;
+  color:var(--ttk-text)!important;border-color:var(--ttk-border)!important;
+  text-shadow:none!important;filter:none!important;
+}
+html[data-ttk-theme] :is(.select2-dropdown,.select2-results,.select2-results__option,.select2-search__field,
+  .ui-menu,.ui-menu-item,.ui-autocomplete,.ui-widget-content,.list-group-item,.dropdown-menu,
+  .popup-content,.popup-body,.modal-content,.extension_block) {
+  background-color:var(--ttk-surface)!important;color:var(--ttk-text)!important;
+  border-color:var(--ttk-border)!important;text-shadow:none!important;
+}
+html[data-ttk-theme] :is(.select2-results__option--highlighted,.select2-results__option--selected,
+ .ui-state-active,.ui-state-highlight,.dropdown-item.active,[aria-selected=true]) {
+  background-color:var(--ttk-raised)!important;color:var(--ttk-text)!important;
+}
+/* Disabled controls must remain identifiable but text must not become illegibly pale. */
+html[data-ttk-theme] :is(select,input,textarea,button):disabled {color:var(--ttk-muted)!important;opacity:.75}
+/* Prevent inherited semi-transparent labels from looking anti-aliased/broken in the extension manager. */
+html[data-ttk-theme] :is(#extensions_management,#extensions_manager,#extensions_list,.extensions_list,.extension_list)
+  :is(.extension_name,.extension_version,.extension-name,.extension-version,label,small,span) {
+  text-shadow:none!important;filter:none!important;-webkit-filter:none!important;
+  -webkit-text-fill-color:currentColor;
+}
+
+/* v0.2.9: Persona, character, prompt and other native settings headers.
+   Avoid dark gradient leftovers, including third-party generic standby headers. */
+html[data-ttk-theme] :is(.standoutHeader,.inline-drawer-header,.settingsBlockHeader,.settings-header,.settings-header-title,.persona_management_header,.persona-header,.persona-management-header,.character-management-header,.character_management_header) {
+  background:var(--ttk-raised)!important;background-image:none!important;
+  color:var(--ttk-text)!important;border-color:var(--ttk-border)!important;
+  text-shadow:none!important;box-shadow:none!important;filter:none!important;
+}
+html[data-ttk-theme] :is(.standoutHeader,.inline-drawer-header,.settingsBlockHeader,.persona_management_header,.persona-header) :is(span,strong,label,i) {
+  color:inherit!important;text-shadow:none!important;filter:none!important;
+}
+html[data-ttk-theme] :is(.standoutHeader,.inline-drawer-header,.settingsBlockHeader,.persona_management_header,.persona-header)[aria-expanded="true"] {
+  border-bottom:1px solid var(--ttk-border)!important;
+}
+/* Preserve readable extension/persona labels instead of inheriting pale native opacity. */
+html[data-ttk-theme] :is(.standoutHeader,.inline-drawer-header,.settingsBlockHeader,.persona_management_header,.persona-header) {opacity:1!important}
+/* Paper is now very light, including its reading canvas. */
+html[data-ttk-theme=paper] #chat .mes[is_user=true] {box-shadow:none!important}
+
+/* v0.2.9: Replace the visible glyph only, never the interactive parent/button. */
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-sliders::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M4%2012h16M4%2018h16%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%226%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2212%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2218%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M4%2012h16M4%2018h16%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%226%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2212%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2218%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-plug::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%203v5M16%203v5M6%208h12v3a6%206%200%200%201-6%206v4M9%2021h6%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%203v5M16%203v5M6%208h12v3a6%206%200%200%201-6%206v4M9%2021h6%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-font::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m4%2020%208-16%208%2016M7%2014h10M2%2020h5M17%2020h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m4%2020%208-16%208%2016M7%2014h10M2%2020h5M17%2020h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-book::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a3%203%200%200%201%203-3h13v17H7a3%203%200%200%200%200%203h13M4%205v14a3%203%200%200%201%203-3%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a3%203%200%200%201%203-3h13v17H7a3%203%200%200%200%200%203h13M4%205v14a3%203%200%200%201%203-3%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-user-gear::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%229%22%20cy%3D%227%22%20r%3D%223%22%2F%3E%3Cpath%20d%3D%22M3%2019v-2a6%206%200%200%201%209-5M17%2013v2m0%204v2m-4-4h2m4%200h2%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%229%22%20cy%3D%227%22%20r%3D%223%22%2F%3E%3Cpath%20d%3D%22M3%2019v-2a6%206%200%200%201%209-5M17%2013v2m0%204v2m-4-4h2m4%200h2%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-image::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%229%22%20r%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m4%2017%205-5%204%204%203-3%205%205%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%229%22%20r%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m4%2017%205-5%204%204%203-3%205%205%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-cubes::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m8%203%204%202.2L8%208%204%205.2%208%203ZM4%205.2V10l4%202.5%204-2.5V5.2M8%208v4.5M16%2011l4%202.2-4%202.8-4-2.8%204-2.2Zm-4%202.2V18l4%202.5%204-2.5v-4.8M16%2016v4.5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m8%203%204%202.2L8%208%204%205.2%208%203ZM4%205.2V10l4%202.5%204-2.5V5.2M8%208v4.5M16%2011l4%202.2-4%202.8-4-2.8%204-2.2Zm-4%202.2V18l4%202.5%204-2.5v-4.8M16%2016v4.5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-face-smile::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M8%2014q4%205%208%200%22%2F%3E%3Cpath%20d%3D%22M9%209h.01M15%209h.01%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M8%2014q4%205%208%200%22%2F%3E%3Cpath%20d%3D%22M9%209h.01M15%209h.01%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-address-card::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%222%22%20y%3D%225%22%20width%3D%2220%22%20height%3D%2214%22%20rx%3D%222%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%2210%22%20r%3D%222%22%2F%3E%3Cpath%20d%3D%22M5%2016q3-4%206%200M14%2010h5M14%2014h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%222%22%20y%3D%225%22%20width%3D%2220%22%20height%3D%2214%22%20rx%3D%222%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%2210%22%20r%3D%222%22%2F%3E%3Cpath%20d%3D%22M5%2016q3-4%206%200M14%2010h5M14%2014h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-bars::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M4%2012h16M4%2018h16%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M4%2012h16M4%2018h16%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-wand-magic-sparkles::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m5%2019%2012-12%202%202L7%2021zM18%202v4M16%204h4M5%204v5M3%206.5h5M19%2016v5M16.5%2018.5h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m5%2019%2012-12%202%202L7%2021zM18%202v4M16%204h4M5%204v5M3%206.5h5M19%2016v5M16.5%2018.5h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-chevron-up::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m5%2015%207-7%207%207%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m5%2015%207-7%207%207%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-paper-plane::before {
+  content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
+  background-color:currentColor!important;
+  -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m21%203-8%2018-3.5-7.5L2%2010zM9.5%2013.5%2021%203%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m21%203-8%2018-3.5-7.5L2%2010zM9.5%2013.5%2021%203%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
+  vertical-align:-.12em!important;opacity:1!important;
+}
+/* Profile translation editor - only inside Toolkit panel, independent from ST menus */
+#ttk-panel .ttk-field input[type="text"]{width:100%;min-width:0;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid var(--ttk-border,rgba(128,128,128,.35));background:var(--ttk-surface,#fff);color:var(--ttk-text,#222);font:inherit;box-shadow:none;text-shadow:none;filter:none}
+#ttk-panel .ttk-translation-edit{padding:8px 0;border-bottom:1px solid var(--ttk-border,rgba(128,128,128,.2))}
+#ttk-panel .ttk-translation-edit>small{overflow-wrap:anywhere;opacity:.85}
+#ttk-panel .ttk-translation-edit .ttk-actions{display:flex;gap:6px;flex-wrap:wrap}
