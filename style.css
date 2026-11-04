@@ -77,7 +77,7 @@ html[data-ttk-theme] body{background:var(--ttk-bg)!important;color:var(--ttk-tex
 /* Layering: consistent top navigation, drawer, panels, and modals. */
 html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings,#left-nav-panel,#right-nav-panel,#left-nav-panel .drawer-content,#right-nav-panel .drawer-content,#extensions_settings,#extensions_settings2,#character_popup,#rm_print_characters_block,#form_create,#form_rename,#form_delete,#form_import,#options,#world_popup,.popup,.dialogue_popup,.ui-dialog,.drawer-content,.floating_panel,.floating-panel){background-color:var(--ttk-surface)!important;color:var(--ttk-text)!important;border-color:var(--ttk-border)!important}
 html[data-ttk-theme] :is(#left-nav-panel,#right-nav-panel,.drawer-content,.popup,.dialogue_popup,.ui-dialog,.floating_panel,.floating-panel){box-shadow:0 8px 28px var(--ttk-shadow)!important}
-html[data-ttk-theme] :is(.drawer-header,.drawer-header-title,.drawer-icon,.menu_button,.fa-solid,.fa-regular,.fa){color:var(--ttk-text)}
+html[data-ttk-theme] :is(.drawer-header,.drawer-header-title,.drawer-icon,.menu_button){color:var(--ttk-text)}
 html[data-ttk-theme] :is(.drawer-header,.drawer-header-title,.inline-drawer-header,.inline-drawer-content,.settings-section,.settings-category,.settingsBlock){border-color:var(--ttk-border)!important}
 /* Existing inline extension headers used black/translucent gradients that survived the original palette override. */
 html[data-ttk-theme] :is(#extensions_settings,#extensions_settings2,#left-nav-panel,#right-nav-panel) :is(.inline-drawer-header,.inline-drawer-header.inline-drawer-toggle,.inline-drawer-content,.standoutHeader,.settingsBlock,.settings-section,.settings-category){background:var(--ttk-surface)!important;background-image:none!important;color:var(--ttk-text)!important;border-color:var(--ttk-border)!important;box-shadow:none!important;text-shadow:none!important}
@@ -100,20 +100,20 @@ html[data-ttk-theme] #chat .mes_text .ttk-dialogue{font-family:var(--ttk-dialogu
 html[data-ttk-theme] #chat .mes_text q{font-family:var(--ttk-dialogueFont)!important}
 
 html[data-ttk-theme] #chat :is(.name_text,.ch_name,.mes_name){color:var(--ttk-accent)!important;font-weight:700!important}
-html[data-ttk-theme] #chat :is(.mesIDDisplay,.mes_timer,.tokenCounterDisplay,.mes_edit_buttons,.mes_button){color:var(--ttk-muted)!important}
+html[data-ttk-theme] #chat :is(.mesIDDisplay,.mes_timer,.tokenCounterDisplay){color:var(--ttk-muted)!important}
 html[data-ttk-theme] #chat .mes_text :is(blockquote,pre){background:var(--ttk-raised)!important;border-left:2px solid var(--ttk-accent)!important;border-radius:4px;padding:8px 12px}
-html[data-ttk-theme] #chat .mes_text :is(a,strong){color:var(--ttk-accent)}
+html[data-ttk-theme] #chat .mes_text a{color:var(--ttk-accent)}
 /* Composer, action buttons, option controls. */
 html[data-ttk-theme] :is(#send_form,#send_form_holder,#send_textarea_wrapper){background:var(--ttk-surface)!important;border-color:var(--ttk-border)!important;color:var(--ttk-text)!important}
 html[data-ttk-theme] #send_textarea{background:var(--ttk-surface)!important;color:var(--ttk-text)!important;border-color:var(--ttk-border)!important;font-family:var(--ttk-font)!important;font-size:var(--ttk-size)!important;line-height:var(--ttk-line)!important;letter-spacing:var(--ttk-tracking)!important}
 html[data-ttk-theme] #send_textarea::placeholder{color:var(--ttk-muted)!important;opacity:.85}
-html[data-ttk-theme] :is(#send_but,#send_form .fa-solid,#send_form .fa-regular,#send_form .menu_button){color:var(--ttk-accent)!important}
+html[data-ttk-theme] #send_but{color:var(--ttk-muted)!important}
 html[data-ttk-theme] :is(.menu_button,input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]),textarea,select,button){border-color:var(--ttk-border)!important}
 html[data-ttk-theme] :is(.menu_button,button,.right_menu_button,.small_button,.paginationjs-page){background-color:var(--ttk-raised)!important;color:var(--ttk-text)!important;border-radius:8px}
 html[data-ttk-theme] :is(input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]),textarea,select){background-color:var(--ttk-surface)!important;color:var(--ttk-text)!important}
 html[data-ttk-theme] :is(input[type=checkbox],input[type=radio],input[type=range]){accent-color:var(--ttk-accent)}
 html[data-ttk-theme] :is(.menu_button,button,input,textarea,select):focus-visible{outline:2px solid var(--ttk-accent)!important;outline-offset:2px}
-html[data-ttk-theme] :is(.selected,.selected_option,.active,.highlighted){border-color:var(--ttk-accent)!important}
+html[data-ttk-theme] :is(.selected_option,.highlighted){border-color:var(--ttk-border)!important}
 /* The three themes have different layouts rather than only different palettes. */
 /* Paper: open literary page, no repeated card boxes for assistant narrative. */
 html[data-ttk-theme=paper] #chat .mes{border:0!important;border-bottom:1px solid var(--ttk-border)!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;max-width:100%;padding:17px 19px 22px!important}
@@ -154,3 +154,95 @@ html[data-ttk-theme] #ttk-panel .ttk-mini-preview[data-theme=nocturne] .ttk-prev
 #ttk-panel .ttk-accent-chip:focus-visible{outline:2px solid var(--ttk-text,#333)!important;outline-offset:2px}
 
 #ttk-panel .ttk-font-status{font-size:11px;line-height:1.5;opacity:.8}
+
+/* 0.2.4: limit icon treatments to the top action rail and composer; no global icon recoloring. */
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){filter:none!important;text-shadow:none!important;-webkit-filter:none!important;opacity:1}
+html[data-ttk-theme][data-ttk-icon-tone=neutral] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){color:var(--ttk-muted)!important}
+html[data-ttk-theme][data-ttk-icon-tone=accent] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){color:var(--ttk-accent)!important}
+html[data-ttk-theme][data-ttk-icon-style=outline] :is(#top-bar,#top-settings-holder,#send_form) .menu_button{border:1px solid var(--ttk-border)!important;background:transparent!important;box-shadow:none!important;border-radius:7px!important}
+html[data-ttk-theme][data-ttk-icon-style=soft] :is(#top-bar,#top-settings-holder,#send_form) .menu_button{border:1px solid var(--ttk-border)!important;background:var(--ttk-raised)!important;box-shadow:none!important;border-radius:10px!important}
+html[data-ttk-theme][data-ttk-icon-style=minimal] :is(#top-bar,#top-settings-holder,#send_form) .menu_button{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}
+/* Keep editing controls sharp, even when third-party icon themes add blur, low opacity or shadows. */
+html[data-ttk-theme] #chat :is(.mes_edit_buttons,.mes_edit_buttons *, .mes_button,.mes_button *, .mes_edit,.mes_edit *){filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important;opacity:1!important;text-shadow:none!important;box-shadow:none!important;transform:none!important}
+html[data-ttk-theme] #chat :is(.mes_edit_buttons,.mes_button,.mes_edit){color:var(--ttk-muted)!important}
+html[data-ttk-theme] #chat :is(.mes_edit_buttons,.mes_button,.mes_edit):hover{color:var(--ttk-text)!important}
+/* Native text rendering: no synthetic shadows or blurred glyph treatments. */
+html[data-ttk-theme] #chat .mes_text,html[data-ttk-theme] #chat .mes_text *{text-shadow:none!important;filter:none!important;-webkit-filter:none!important;font-synthesis:none;text-rendering:optimizeLegibility}
+#ttk-panel .ttk-palette-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#ttk-panel .ttk-palette-chip{display:flex;flex-direction:column;gap:5px;align-items:stretch;padding:5px!important;min-width:0}
+#ttk-panel .ttk-palette-chip-swatch{display:block;height:23px;border:1px solid #8886;border-radius:4px}
+#ttk-panel .ttk-palette-chip small{font-size:10px}
+
+
+/* v0.2.5 Porcelain — complete fourth theme, Blue-and-White + carved relief.
+   The porcelain motif is CSS-only: no borrowed museum drawings, no external SVG assets.
+   All of these rules disappear when the design module is disabled. */
+html[data-ttk-theme=porcelain] body{background:#fff!important;background-image:none!important}
+html[data-ttk-theme=porcelain] #chat{background:#fff!important}
+html[data-ttk-theme=porcelain] #chat .mes{
+  position:relative;border:1px solid var(--ttk-border)!important;border-radius:7px!important;
+  background:var(--ttk-ai)!important;box-shadow:inset 0 0 0 3px var(--ttk-ai)!important;
+  padding:21px 20px 19px!important;
+}
+html[data-ttk-theme=porcelain] #chat .mes[is_user=true]{background:var(--ttk-user)!important;box-shadow:inset 0 0 0 3px var(--ttk-user)!important}
+/* Decorative corner: stylized porcelain rim, no decoration behind prose. */
+html[data-ttk-theme=porcelain] #chat .mes::before{
+  content:'';pointer-events:none;position:absolute;top:7px;right:9px;width:35px;height:14px;
+  border-top:1px solid var(--ttk-accent);border-right:1px solid var(--ttk-accent);
+  border-radius:0 5px 0 0;opacity:.7;
+}
+html[data-ttk-theme=porcelain] #chat .mes[is_user=true]::before{right:auto;left:9px;border-right:0;border-left:1px solid var(--ttk-accent);border-radius:5px 0 0 0}
+html[data-ttk-theme=porcelain] #chat .mes_text{color:var(--ttk-text)!important}
+html[data-ttk-theme=porcelain] #chat :is(.mes_edit_buttons,.mes_button,.mes_edit){border-radius:5px!important;color:var(--ttk-muted)!important;background:transparent!important;box-shadow:none!important;opacity:1!important}
+html[data-ttk-theme=porcelain] :is(#top-bar,#top-settings-holder,#top-settings){
+  background:var(--ttk-surface)!important;border-bottom:2px double var(--ttk-border)!important;
+  box-shadow:0 2px 0 var(--ttk-raised)!important
+}
+html[data-ttk-theme=porcelain] :is(#left-nav-panel,#right-nav-panel,.drawer-content,.popup,.dialogue_popup,.ui-dialog,.floating_panel,.floating-panel){
+  border:1px solid var(--ttk-border)!important;box-shadow:inset 0 0 0 3px var(--ttk-raised),0 6px 24px var(--ttk-shadow)!important;
+  border-radius:8px!important
+}
+html[data-ttk-theme=porcelain] :is(.drawer-header,.inline-drawer-header,.standoutHeader){
+  border-bottom:1px solid var(--ttk-border)!important;
+  background:var(--ttk-raised)!important;color:var(--ttk-text)!important
+}
+html[data-ttk-theme=porcelain] :is(.drawer-header,.inline-drawer-header,.standoutHeader)::after{
+  content:'';display:block;width:37px;height:2px;margin:4px 0 0;
+  background:linear-gradient(90deg,var(--ttk-accent),var(--ttk-border),transparent);pointer-events:none
+}
+html[data-ttk-theme=porcelain] :is(#send_form,#send_form_holder,#send_textarea_wrapper){
+  background:#fff!important;border-color:var(--ttk-border)!important;box-shadow:none!important
+}
+html[data-ttk-theme=porcelain] #send_form{border-top:2px double var(--ttk-border)!important}
+html[data-ttk-theme=porcelain] #send_textarea{background:#fff!important}
+html[data-ttk-theme=porcelain] :is(.menu_button,button,.right_menu_button,.small_button){
+  box-shadow:inset 0 0 0 1px var(--ttk-surface)!important;border:1px solid var(--ttk-border)!important;
+  background:var(--ttk-raised)!important;border-radius:6px!important
+}
+html[data-ttk-theme=porcelain] :is(.menu_button,button,.right_menu_button,.small_button):hover{
+  border-color:var(--ttk-accent)!important;box-shadow:inset 0 0 0 1px var(--ttk-border)!important
+}
+html[data-ttk-theme=porcelain] #ttk-panel .ttk-panel-summary,
+html[data-ttk-theme=porcelain] #ttk-panel .ttk-section-summary{
+  background:var(--ttk-raised)!important;border-bottom:2px double var(--ttk-border)!important
+}
+html[data-ttk-theme=porcelain] #ttk-panel .ttk-theme-card[aria-pressed=true]{outline-color:var(--ttk-accent)}
+html[data-ttk-theme=porcelain] #ttk-panel .ttk-mini-preview{
+  background:#fff!important;border:1px solid var(--pv-border)!important;box-shadow:inset 0 0 0 3px var(--pv-raised)
+}
+html[data-ttk-theme=porcelain] #ttk-panel .ttk-mini-preview .ttk-preview-message{
+  position:relative;background:var(--pv-ai)!important;border:1px solid var(--pv-border)!important;
+  box-shadow:inset 0 0 0 2px var(--pv-ai)!important;border-radius:7px!important
+}
+html[data-ttk-theme=porcelain] #ttk-panel .ttk-mini-preview .ttk-preview-message::after{
+  content:'◇  ─  ◇';display:block;color:var(--pv-accent);font-size:10px;
+  font-family:serif;letter-spacing:4px;text-align:center;margin-top:10px
+}
+/* Theme swatch includes a porcelain rim, not just a generic blue accent bar. */
+#ttk-panel .ttk-theme-card:has(strong) .ttk-theme-swatch{position:relative}
+#ttk-panel .ttk-theme-card[aria-pressed=true] .ttk-theme-swatch{border-color:var(--ttk-sample-accent)}
+@media(max-width:700px){html[data-ttk-theme=porcelain] #chat .mes{padding:15px 12px!important}}
+
+/* Four theme cards (two columns on narrow settings panels) */
+#ttk-panel .ttk-theme-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media(max-width:950px){#ttk-panel .ttk-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
