@@ -159,9 +159,7 @@ html[data-ttk-theme] #ttk-panel .ttk-mini-preview[data-theme=nocturne] .ttk-prev
 html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){filter:none!important;text-shadow:none!important;-webkit-filter:none!important;opacity:1}
 html[data-ttk-theme][data-ttk-icon-tone=neutral] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){color:var(--ttk-muted)!important}
 html[data-ttk-theme][data-ttk-icon-tone=accent] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){color:var(--ttk-accent)!important}
-html[data-ttk-theme][data-ttk-icon-style=outline] :is(#top-bar,#top-settings-holder,#send_form) .menu_button{border:1px solid var(--ttk-border)!important;background:transparent!important;box-shadow:none!important;border-radius:7px!important}
-html[data-ttk-theme][data-ttk-icon-style=soft] :is(#top-bar,#top-settings-holder,#send_form) .menu_button{border:1px solid var(--ttk-border)!important;background:var(--ttk-raised)!important;box-shadow:none!important;border-radius:10px!important}
-html[data-ttk-theme][data-ttk-icon-style=minimal] :is(#top-bar,#top-settings-holder,#send_form) .menu_button{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important}
+/* Icon appearance is handled by independent top/bottom bar rules below. */
 /* Keep editing controls sharp, even when third-party icon themes add blur, low opacity or shadows. */
 html[data-ttk-theme] #chat :is(.mes_edit_buttons,.mes_edit_buttons *, .mes_button,.mes_button *, .mes_edit,.mes_edit *){filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important;opacity:1!important;text-shadow:none!important;box-shadow:none!important;transform:none!important}
 html[data-ttk-theme] #chat :is(.mes_edit_buttons,.mes_button,.mes_edit){color:var(--ttk-muted)!important}
@@ -342,7 +340,7 @@ html[data-ttk-theme] :is(.select2-results__option--highlighted,.select2-results_
   background-color:var(--ttk-raised)!important;color:var(--ttk-text)!important;
 }
 /* Disabled controls must remain identifiable but text must not become illegibly pale. */
-html[data-ttk-theme] :is(select,input,textarea,button):disabled {color:var(--ttk-muted)!important;opacity:.75}
+html[data-ttk-theme] :is(select,input,textarea,button):disabled {color:var(--ttk-muted)!important;opacity:1!important}
 /* Prevent inherited semi-transparent labels from looking anti-aliased/broken in the extension manager. */
 html[data-ttk-theme] :is(#extensions_management,#extensions_manager,#extensions_list,.extensions_list,.extension_list)
   :is(.extension_name,.extension_version,.extension-name,.extension-version,label,small,span) {
@@ -600,4 +598,149 @@ html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-che
 #ttk-panel input[type="checkbox"]:focus-visible {
   outline: 2px solid var(--ttk-accent, #587997) !important;
   outline-offset: 2px !important;
+}
+
+/* ==============================================================
+   0.3.7 / UI surface & readability audit (SillyTavern 1.19.x)
+   No native theme JSON or third-party extension data is modified.
+   Use theme tokens rather than hard-coded white, grey or blue.
+   ============================================================= */
+
+/* Top menu: the icon itself is a glyph/mask, not an opaque button tile.
+   Keep hover/focus indication without creating a permanent square backdrop. */
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.drawer,.drawer-toggle,.drawer-icon,.menu_button,.right_menu_button,[id$="-settings-button"],[id$="-drawer-toggle"],[id$="DrawerIcon"],.top-menu-button) {
+  background-color:transparent!important;
+  background-image:none!important;
+  border-color:transparent!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  text-shadow:none!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.drawer,.drawer-toggle,.menu_button,.right_menu_button,[id$="-settings-button"],[id$="-drawer-toggle"],.top-menu-button):is(:hover,:focus-visible) {
+  background:var(--ttk-raised)!important;
+  border-radius:5px!important;
+}
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.drawer-icon,.fa,.fas,.far,.fa-solid,.fa-regular) {
+  color:var(--ttk-muted)!important;
+  -webkit-text-fill-color:currentColor!important;
+  opacity:1!important;
+}
+html[data-ttk-theme][data-ttk-icon-tone=accent]
+  :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.drawer-icon,.fa,.fas,.far,.fa-solid,.fa-regular){color:var(--ttk-accent)!important;}
+/* Active items have a fine indicator line rather than a painted icon square. */
+html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
+  :is(.drawer,.drawer-toggle,.menu_button,.top-menu-button).active {
+  background:transparent!important;
+  border-bottom:2px solid var(--ttk-accent)!important;
+}
+
+/* A unified surface system for native settings, lorebook, backgrounds and drawers. */
+html[data-ttk-theme] :is(#WorldInfo,#world_info,#WorldInfoEditor,#world_popup,#backgrounds,
+  #backgrounds_menu,#backgrounds_settings,#backgrounds_holder,
+  #user-settings-block,#user-settings,#extensions_settings,#extensions_settings2,
+  #api_settings,#advanced-formatting,#left-nav-panel,#right-nav-panel,
+  .drawer-content,.inline-drawer-content,.popup,.dialogue_popup,.ui-dialog,
+  .select2-dropdown,.select2-results,.select2-search--dropdown) {
+  background-color:var(--ttk-surface)!important;
+  color:var(--ttk-text)!important;
+  border-color:var(--ttk-border)!important;
+  background-image:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html[data-ttk-theme] :is(.inline-drawer-header,.standoutHeader,.settingsBlockHeader,
+  .settings-header,.settings-header-title,.drawer-header,
+  #backgrounds .inline-drawer-header,#WorldInfo .inline-drawer-header,
+  #user-settings-block .inline-drawer-header) {
+  background:var(--ttk-raised)!important;
+  border:1px solid var(--ttk-border)!important;
+  border-radius:5px!important;
+  color:var(--ttk-text)!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  -webkit-text-stroke:0!important;
+  filter:none!important;
+  opacity:1!important;
+}
+/* Remove the extra decorative strokes appended to headers by older Toolkit builds. */
+html[data-ttk-theme] :is(.inline-drawer-header,.standoutHeader,.settingsBlockHeader,.drawer-header)::after {
+  background-image:none!important;
+  box-shadow:none!important;
+}
+/* Input and Select2 background should follow the palette, not native grey gradients. */
+html[data-ttk-theme] :is(.drawer-content,.inline-drawer-content,.popup,
+  #world_popup,#WorldInfo,#world_info,#backgrounds,#user-settings-block)
+  :is(.text_pole,input[type="text"],input[type="search"],input[type="number"],textarea,select,
+      .select2-selection,.select2-selection--single,.select2-selection--multiple,
+      .select2-selection__rendered,.dropdown,.multiselect) {
+  background:var(--ttk-surface)!important;
+  color:var(--ttk-text)!important;
+  border-color:var(--ttk-border)!important;
+  box-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+html[data-ttk-theme] :is(.select2-container--default .select2-selection__rendered,
+  .select2-selection__placeholder,.select2-results__option,
+  .select2-search__field) {
+  color:var(--ttk-text)!important;
+  -webkit-text-fill-color:currentColor!important;
+  text-shadow:none!important;
+  filter:none!important;
+}
+html[data-ttk-theme] :is(input::placeholder,textarea::placeholder) {
+  color:var(--ttk-muted)!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+
+/* Native disabled setting rows must remain readable. Disabled ACTIONS remain
+   non-interactive; this changes appearance only and never their disabled flag. */
+html[data-ttk-theme] :is(#user-settings-block,#left-nav-panel,#right-nav-panel,
+  #extensions_settings,#extensions_settings2,#WorldInfo,#backgrounds)
+  :is(label,.checkbox_label,.checkbox-label,.setting_label,.settings_label,small,span) {
+  text-shadow:none!important;
+  -webkit-text-stroke:0!important;
+  -webkit-text-stroke-width:0!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+html[data-ttk-theme] :is(#user-settings-block,#left-nav-panel,#right-nav-panel,
+  #extensions_settings,#extensions_settings2,#WorldInfo,#backgrounds)
+  :is(.disabled,.disabled_text,[aria-disabled="true"]):not(input):not(button):not(select):not(textarea) {
+  opacity:1!important;
+  color:var(--ttk-muted)!important;
+}
+html[data-ttk-theme] :is(#user-settings-block,#left-nav-panel,#right-nav-panel,
+  #extensions_settings,#extensions_settings2,#WorldInfo,#backgrounds)
+  :is(.disabled,.disabled_text,[aria-disabled="true"]):not(input):not(button):not(select):not(textarea)
+  :is(label,span,small) {
+  color:var(--ttk-muted)!important;
+  opacity:1!important;
+}
+html[data-ttk-theme] :is(#user-settings-block,#left-nav-panel,#right-nav-panel,
+  #extensions_settings,#extensions_settings2,#WorldInfo,#backgrounds)
+  :is(label,small,.description,.hint,.help_text,.text-muted) {
+  -webkit-text-fill-color:currentColor!important;
+}
+/* Extension settings need a legible text hierarchy, even when native theme
+   uses low opacity on help text. Keep truly disabled checkboxes disabled. */
+#ttk-panel .ttk-panel-summary small,
+#ttk-panel .ttk-note,
+#ttk-panel .ttk-option-label small,
+#ttk-panel .ttk-theme-card small {opacity:1!important;color:var(--ttk-muted,#606a76)!important;}
+#ttk-panel .ttk-module-row:has(input:disabled){opacity:1!important;}
+#ttk-panel .ttk-module-row:has(input:disabled) .ttk-option-label{color:var(--ttk-muted,#606a76)!important;}
+#ttk-panel input[type="checkbox"]:disabled{opacity:.8!important;}
+/* Prevent the generic disabled override from washing out functional controls. */
+html[data-ttk-theme] :is(input,textarea,select):disabled {
+  background-color:var(--ttk-raised)!important;
+  color:var(--ttk-muted)!important;
+  opacity:1!important;
 }
