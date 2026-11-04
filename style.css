@@ -195,8 +195,9 @@ html[data-ttk-theme=porcelain] #chat .mes[is_user=true]::before{right:auto;left:
 html[data-ttk-theme=porcelain] #chat .mes_text{color:var(--ttk-text)!important}
 html[data-ttk-theme=porcelain] #chat :is(.mes_edit_buttons,.mes_button,.mes_edit){border-radius:5px!important;color:var(--ttk-muted)!important;background:transparent!important;box-shadow:none!important;opacity:1!important}
 html[data-ttk-theme=porcelain] :is(#top-bar,#top-settings-holder,#top-settings){
-  background:var(--ttk-surface)!important;border-bottom:2px double var(--ttk-border)!important;
-  box-shadow:0 2px 0 var(--ttk-raised)!important
+  background:var(--ttk-surface)!important;
+  border-color:transparent!important;
+  box-shadow:inset 0 -1px 0 var(--ttk-border)!important;
 }
 html[data-ttk-theme=porcelain] :is(#left-nav-panel,#right-nav-panel,.drawer-content,.popup,.dialogue_popup,.ui-dialog,.floating_panel,.floating-panel){
   border:1px solid var(--ttk-border)!important;box-shadow:inset 0 0 0 3px var(--ttk-raised),0 6px 24px var(--ttk-shadow)!important;
@@ -465,29 +466,7 @@ html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-paper-plane::before {
 #ttk-panel .ttk-translation-edit>small{overflow-wrap:anywhere;opacity:.85}
 #ttk-panel .ttk-translation-edit .ttk-actions{display:flex;gap:6px;flex-wrap:wrap}
 
-/* v0.3.1: only one localized name is painted inside the native prompt row. */
-[data-pm-name].ttk-prompt-localized .ttk-prompt-name-display {
-  display:inline!important;position:static!important;float:none!important;
-  font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;
-  font-style:inherit!important;line-height:inherit!important;color:inherit!important;
-  opacity:1!important;visibility:visible!important;white-space:normal!important;word-break:keep-all!important;overflow-wrap:normal!important;writing-mode:horizontal-tb!important;
-  text-shadow:none!important;filter:none!important;
-}
-/* Cover ST versions that emit the native name as a generated pseudo-element. */
-[data-pm-name].ttk-prompt-localized::before,
-[data-pm-name].ttk-prompt-localized::after {
-  content:none!important;
-}
-[data-pm-name].ttk-prompt-localized :is(a.prompt-manager-inspect-action,span[title],.prompt_manager_prompt_name,.prompt-manager-prompt-name)::before,
-[data-pm-name].ttk-prompt-localized :is(a.prompt-manager-inspect-action,span[title],.prompt_manager_prompt_name,.prompt-manager-prompt-name)::after {
-  content:none!important;
-}
-[data-pm-name].ttk-prompt-localized .ttk-prompt-name-display {
-  display:inline-block!important;
-  max-width:100%!important;
-  vertical-align:top!important;
-}
-
+/* Prompt labels are native inline text, with no injected spans or layout overrides. */
 /* v0.3.3: keep top navigation glyphs visible on light/dark theme surfaces.
  * Earlier CSS masks were tinted with currentColor; native icon styles can supply
  * white/transparent colors on pale surfaces. Use explicit theme ink and keep
