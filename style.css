@@ -609,7 +609,7 @@ html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-che
 /* Top menu: the icon itself is a glyph/mask, not an opaque button tile.
    Keep hover/focus indication without creating a permanent square backdrop. */
 html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer,.drawer-toggle,.drawer-icon,.menu_button,.right_menu_button,[id$="-settings-button"],[id$="-drawer-toggle"],[id$="DrawerIcon"],.top-menu-button) {
+  :is(.drawer-icon,.top-menu-button) {
   background-color:transparent!important;
   background-image:none!important;
   border-color:transparent!important;
@@ -620,7 +620,7 @@ html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
   text-shadow:none!important;
 }
 html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer,.drawer-toggle,.menu_button,.right_menu_button,[id$="-settings-button"],[id$="-drawer-toggle"],.top-menu-button):is(:hover,:focus-visible) {
+  :is(.drawer-icon,.top-menu-button):is(:hover,:focus-visible) {
   background:var(--ttk-raised)!important;
   border-radius:5px!important;
 }
@@ -635,7 +635,7 @@ html[data-ttk-theme][data-ttk-icon-tone=accent]
   :is(.drawer-icon,.fa,.fas,.far,.fa-solid,.fa-regular){color:var(--ttk-accent)!important;}
 /* Active items have a fine indicator line rather than a painted icon square. */
 html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer,.drawer-toggle,.menu_button,.top-menu-button).active {
+  :is(.drawer-icon,.top-menu-button).active {
   background:transparent!important;
   border-bottom:2px solid var(--ttk-accent)!important;
 }
@@ -745,53 +745,104 @@ html[data-ttk-theme] :is(input,textarea,select):disabled {
   opacity:1!important;
 }
 
-/* v0.3.10 — Top navigation: never paint a tile behind an icon.
-   Scope to the toolbar. Do not change flyouts, dialogs or the icon glyphs. */
-html[data-ttk-theme] #top-settings-holder :is(
-  .drawer, .drawer-toggle, .drawer-icon, .menu_button, .right_menu_button,
-  .top-menu-button, [id$="-settings-button"], [id$="-drawer-toggle"],
-  [id$="DrawerIcon"]
-),
-html[data-ttk-theme] #top-bar :is(
-  .drawer, .drawer-toggle, .drawer-icon, .menu_button, .right_menu_button,
-  .top-menu-button, [id$="-settings-button"], [id$="-drawer-toggle"],
-  [id$="DrawerIcon"]
-),
-html[data-ttk-theme] #top-settings :is(
-  .drawer, .drawer-toggle, .drawer-icon, .menu_button, .right_menu_button,
-  .top-menu-button, [id$="-settings-button"], [id$="-drawer-toggle"],
-  [id$="DrawerIcon"]
-) {
-  background: transparent !important;
-  background-color: transparent !important;
-  background-image: none !important;
-  border: 0 !important;
-  outline: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  filter: none !important;
-  -webkit-filter: none !important;
-  text-shadow: none !important;
-}
-/* No permanent squares on hover, focus, selected, or expanded tabs. */
+/* v0.3.11 — Top navigation icon controls only. Do NOT target .drawer or
+   .drawer-content here: these containers include the actual settings windows. */
 html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
-  :is(.drawer,.drawer-toggle,.menu_button,.right_menu_button,.top-menu-button,
-      [id$="-settings-button"],[id$="-drawer-toggle"], [id$="DrawerIcon"])
-  :is(:hover,:focus,:focus-visible,.active,.openIcon,[aria-expanded="true"]) {
-  background: transparent !important;
-  border-color: transparent !important;
-  box-shadow: none !important;
+  :is(.drawer-icon, .openIcon, .top-menu-button, .drawer-toggle > .drawer-icon) {
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+  text-shadow:none!important;
+  opacity:1!important;
 }
-/* Accessibility: keyboard focus retains a small underline, not a box. */
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
-  :is(.drawer-toggle,.menu_button,.right_menu_button,.top-menu-button):focus-visible {
-  outline: none !important;
-  box-shadow: inset 0 -2px 0 var(--ttk-accent) !important;
+/* Only the icon itself is transparent; a menu's containing panel stays opaque. */
+html[data-ttk-theme] :is(#left-nav-panel,#right-nav-panel,
+ #extensions_settings,#extensions_settings2,#WorldInfo,#backgrounds,
+ .drawer-content,.inline-drawer-content,.popup,.dialogue_popup,.ui-dialog,
+ .floating_panel,.floating-panel) {
+  background-color:var(--ttk-surface)!important;
+  color:var(--ttk-text)!important;
+  border-color:var(--ttk-border)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
 }
-/* Protect the glyph: inherited SVG masks / Font Awesome ::before remain intact. */
+/* Both menu frames and native inner drawer surfaces must be painted.
+   Avoid global overlays, transient tooltips and the chat itself. */
+html[data-ttk-theme] :is(#left-nav-panel,#right-nav-panel)
+  :is(.drawer-content,.inline-drawer-content,.inline-drawer,.settings-block,.settingsBlock,
+      .settings-section,.settings-category) {
+  background-color:var(--ttk-surface)!important;
+  color:var(--ttk-text)!important;
+}
 html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
-  :is(.drawer-icon,.fa,.fas,.far,.fa-solid,.fa-regular) {
-  opacity: 1 !important;
-  filter: none !important;
-  text-shadow: none !important;
+  :is(.drawer-content,.inline-drawer-content,.popup,.floating_panel,.floating-panel) {
+  background-color:var(--ttk-surface)!important;
+  color:var(--ttk-text)!important;
+  opacity:1!important;
+}
+/* Focus indicator on the interactive icon, not an opaque tile. */
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
+  :is(.drawer-icon,.top-menu-button):focus-visible {
+  outline:2px solid var(--ttk-accent)!important;
+  outline-offset:2px!important;
+}
+
+/* v0.3.12: Equalize top-bar icon geometry in all four themes.
+   Porcelain previously styled every button globally, including drawer toggles.
+   Restrict the correction to the *toggle control*; never the drawer body or panel. */
+html[data-ttk-theme] #top-settings-holder .drawer-toggle,
+html[data-ttk-theme] #top-bar .drawer-toggle,
+html[data-ttk-theme] #top-settings .drawer-toggle {
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex-flow:row nowrap!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon,
+html[data-ttk-theme] #top-bar .drawer-toggle > .drawer-icon,
+html[data-ttk-theme] #top-settings .drawer-toggle > .drawer-icon {
+  box-sizing:border-box!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  vertical-align:middle!important;
+  line-height:1!important;
+  margin:0!important;
+  padding:0!important;
+  transform:none!important;
+  position:relative!important;
+  inset:auto!important;
+  background:transparent!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+/* Neutralize Porcelain's global button-frame styling only on top-bar controls. */
+html[data-ttk-theme=porcelain] :is(#top-settings-holder,#top-bar,#top-settings)
+  :is(.drawer-toggle,.top-menu-button) {
+  background:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+/* Do not add pseudo-element labels or decorative borders around top icons. */
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
+  .drawer-toggle::before,
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
+  .drawer-toggle::after {
+  content:none!important;
 }
