@@ -117,7 +117,7 @@ html[data-ttk-theme] :is(.selected_option,.highlighted){border-color:var(--ttk-b
 /* The three themes have different layouts rather than only different palettes. */
 /* Paper: open literary page, no repeated card boxes for assistant narrative. */
 html[data-ttk-theme=paper] #chat .mes{border:0!important;border-bottom:1px solid var(--ttk-border)!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;max-width:100%;padding:17px 19px 22px!important}
-html[data-ttk-theme=paper] #chat .mes[is_user=true]{background:var(--ttk-user)!important;border:1px solid var(--ttk-border)!important;border-radius:8px!important;max-width:95%}
+html[data-ttk-theme=paper] #chat .mes[is_user=true]{background:var(--ttk-user)!important;border:1px solid var(--ttk-border)!important;border-radius:8px!important;max-width:100%;width:100%;box-sizing:border-box}
 html[data-ttk-theme=paper] :is(#top-bar,#top-settings-holder){border-bottom:1px solid var(--ttk-border)!important}
 html[data-ttk-theme=paper] #send_form{border-top:1px solid var(--ttk-border)!important;box-shadow:0 -8px 24px var(--ttk-shadow)!important}
 /* Nocturne: restrained side-accent and low-glare cards. */
@@ -126,7 +126,7 @@ html[data-ttk-theme=nocturne] #chat .mes[is_user=true]{border-left-color:var(--t
 html[data-ttk-theme=nocturne] #chat .mes_text :is(em,i){color:#C4CEE0}
 /* Studio: softened application cards, crisp sans serif layout. */
 html[data-ttk-theme=studio] #chat .mes{border-radius:16px!important;box-shadow:0 4px 17px var(--ttk-shadow)!important}
-html[data-ttk-theme=studio] #chat .mes[is_user=true]{max-width:94%}
+html[data-ttk-theme=studio] #chat .mes[is_user=true]{max-width:100%;width:100%;box-sizing:border-box}
 html[data-ttk-theme=studio] :is(.drawer-content,.floating_panel,.popup){border-radius:12px!important}
 @media(max-width:700px){
  html[data-ttk-theme] #chat .mes{max-width:100%!important;margin:8px 3px!important;padding:10px 12px!important}
@@ -246,3 +246,55 @@ html[data-ttk-theme=porcelain] #ttk-panel .ttk-mini-preview .ttk-preview-message
 /* Four theme cards (two columns on narrow settings panels) */
 #ttk-panel .ttk-theme-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
 @media(max-width:950px){#ttk-panel .ttk-theme-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* v0.2.6 — full-width, aligned Paper/Studio messages and themed reasoning controls.
+   Do not change the native reasoning disclosure behavior or its text. */
+html[data-ttk-theme="paper"] #chat .mes,
+html[data-ttk-theme="studio"] #chat .mes {
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  margin:12px 0!important;
+}
+html[data-ttk-theme="paper"] #chat .mes[is_user="true"],
+html[data-ttk-theme="paper"] #chat .mes[is_user="false"],
+html[data-ttk-theme="studio"] #chat .mes[is_user="true"],
+html[data-ttk-theme="studio"] #chat .mes[is_user="false"]{
+  width:100%!important;
+  max-width:100%!important;
+  margin-inline:0!important;
+}
+/* Normalize the dark/gray native Thought disclosure with explicit surface, border,
+   text and icon colors. Scope to chat reasoning controls, not generic buttons. */
+html[data-ttk-theme] #chat :is(.mes_reasoning_header,.mes_reasoning_summary,summary.mes_reasoning_summary),
+html[data-ttk-theme] #chat :is(.mes_reasoning_header,.mes_reasoning_summary,summary.mes_reasoning_summary):is(:hover,:focus-visible){
+  background:var(--ttk-raised)!important;
+  background-image:none!important;
+  color:var(--ttk-text)!important;
+  border:1px solid var(--ttk-border)!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+  filter:none!important;
+  backdrop-filter:none!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+html[data-ttk-theme] #chat :is(.mes_reasoning_header,.mes_reasoning_summary) :is(h4,span,.mes_reasoning_header_title,.mes_reasoning_arrow,svg,i,.fa-solid,.fa-regular){
+  color:var(--ttk-text)!important;
+  fill:currentColor!important;
+  text-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+}
+html[data-ttk-theme] #chat .mes_reasoning{
+  background:var(--ttk-surface)!important;
+  color:var(--ttk-text)!important;
+  border-color:var(--ttk-border)!important;
+  box-shadow:none!important;
+}
+@media(max-width:700px){
+ html[data-ttk-theme="paper"] #chat .mes,
+ html[data-ttk-theme="studio"] #chat .mes{width:100%!important;max-width:100%!important;margin:8px 0!important;}
+}

@@ -1,11 +1,13 @@
+import {normalizeLocalization,startReasoningLocalization,stopReasoningLocalization} from './localization.js';
 import {applyDesign,teardownDesign,normalizeDesign,selectTheme,resetPalette,THEMES,FONTS,FONT_GROUPS} from './design.js';
 const KEY='tavern_toolkit_independent';
-const DEFAULT_MODULES={design:true,localization:false,translation:false,qr:false,inventory:false};
+const DEFAULT_MODULES={design:true,localization:true,translation:false,qr:false,inventory:false};
 let settings,save;
 const el=(tag,cls='',text='')=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text)n.textContent=text;return n;};
 const btn=(label,action,cls='')=>{const n=el('button',`ttk-button ${cls}`,label);n.type='button';n.addEventListener('click',action);return n;};
-function merge(raw){const modules={...DEFAULT_MODULES,...(raw?.modules||{})};for(const key of ['localization','translation','qr','inventory'])modules[key]=false;const old=raw?.design||{};const migrated=old.theme==='midnight'?'nocturne':old.theme==='sage'?'studio':old.theme;return {modules,design:normalizeDesign({...old,theme:migrated})};}
-function changed(){applyDesign(settings.modules.design,settings.design);syncDialogueHighlights(settings.modules.design);save();}
+function merge(raw){const modules={...DEFAULT_MODULES,...(raw?.modules||{})};for(const key of ['translation','qr','inventory'])modules[key]=false;const old=raw?.design||{};const migrated=old.theme==='midnight'?'nocturne':old.theme==='sage'?'studio':old.theme;return {modules,design:normalizeDesign({...old,theme:migrated}),localization:normalizeLocalization(raw?.localization)};}
+function changed(){applyDesign(settings.modules.design,settings.design);syncDialogueHighlights(settings.modules.design);syncLocalization();save();}
+function syncLocalization(){if(settings.modules.localization)startReasoningLocalization(settings.localization);else stopReasoningLocalization();}
 let dialogueObserver=null, dialogueTimer=null, activeChat=null;
 const QUOTES=/(“[^”\n]+”|「[^」\n]+」|\"[^\"\n]+\")/g;
 function highlightDialogue(container){
@@ -45,13 +47,21 @@ function syncDialogueHighlights(enabled){
 }
 
 function info(label,detail){const n=el('span','ttk-option-label');n.append(el('strong','',label));if(detail)n.append(el('small','',detail));return n;}
-function switchRow(parent,label,desc,key,disabled=false){const row=el('label','ttk-module-row');row.append(info(label,desc));const check=el('input');check.type='checkbox';check.checked=!!settings.modules[key];check.disabled=disabled;check.addEventListener('change',()=>{settings.modules[key]=check.checked;changed();document.getElementById('ttk-theme-section').hidden=!check.checked;});row.append(check);parent.append(row);}
+function switchRow(parent,label,desc,key,disabled=false){const row=el('label','ttk-module-row');row.append(info(label,desc));const check=el('input');check.type='checkbox';check.checked=!!settings.modules[key];check.disabled=disabled;check.addEventListener('change',()=>{settings.modules[key]=check.checked;changed();if(key==='design')document.getElementById('ttk-theme-section').hidden=!check.checked;if(key==='localization')document.getElementById('ttk-localization-section').hidden=!check.checked;});row.append(check);parent.append(row);}
 function slider(parent,label,key,min,max,step,fmt,onUpdate){const row=el('label','ttk-slider');const line=el('span','ttk-slider-label');const out=el('output','',fmt(settings.design[key]));line.append(el('strong','',label),out);const input=el('input');input.type='range';Object.assign(input,{min,max,step,value:settings.design[key]});input.addEventListener('input',()=>{settings.design[key]=Number(input.value);out.textContent=fmt(settings.design[key]);onUpdate?.();changed();});row.append(line,input);parent.append(row);}
 function build(){
- const root=el('details','ttk-settings');root.id='ttk-panel';const sum=el('summary','ttk-panel-summary');sum.append(el('span','','태번 도구함'),el('small','','v0.2.5 · 디자인'));root.append(sum);
+ const root=el('details','ttk-settings');root.id='ttk-panel';const sum=el('summary','ttk-panel-summary');sum.append(el('span','','태번 도구함'),el('small','','v0.2.7 · 디자인/한글화'));root.append(sum);
  const body=el('div','ttk-settings-body');root.append(body);
  body.append(el('p','ttk-note','모듈별 ON/OFF를 지원합니다. 디자인을 끄면 확장 스타일이 제거되고 원래 실리태번 테마가 표시됩니다.'));
- const modules=el('section','ttk-module-list');switchRow(modules,'디자인','Paper · Nocturne · Studio · Porcelain 완성형 테마','design');switchRow(modules,'한글화','다음 버전에서 구현','localization',true);switchRow(modules,'번역','다음 버전에서 구현 · Interpres와 중복 실행 방지','translation',true);switchRow(modules,'QR 보관함','다음 버전에서 구현','qr',true);switchRow(modules,'통합 조회','다음 버전에서 구현','inventory',true);body.append(modules);
+ const modules=el('section','ttk-module-list');switchRow(modules,'디자인','Paper · Nocturne · Studio · Porcelain 완성형 테마','design');switchRow(modules,'한글화','추론 영역 제목 · 사유 및 소요 시간','localization');switchRow(modules,'번역','다음 버전에서 구현 · Interpres와 중복 실행 방지','translation',true);switchRow(modules,'QR 보관함','다음 버전에서 구현','qr',true);switchRow(modules,'통합 조회','다음 버전에서 구현','inventory',true);body.append(modules);
+ const locPanel=el('details','ttk-section');locPanel.id='ttk-localization-section';locPanel.append(el('summary','ttk-section-summary','한글화 · 추론 영역 제목'));
+ const locBody=el('div','ttk-controls');locPanel.append(locBody);
+ locBody.append(el('p','ttk-note','추론(Thought) 제목만 화면에서 변경합니다. 접기·펼치기 상태, 추론 원문, 채팅 저장 데이터는 변경하지 않습니다.'));
+ const nameRow=el('label','ttk-field');nameRow.append(el('strong','','추론 제목'));const nameInput=el('input');nameInput.type='text';nameInput.maxLength=30;nameInput.value=settings.localization.reasoningLabel;
+ nameInput.addEventListener('change',()=>{settings.localization=normalizeLocalization({...settings.localization,reasoningLabel:nameInput.value});nameInput.value=settings.localization.reasoningLabel;changed();});nameRow.append(nameInput);locBody.append(nameRow);
+ const timeRow=el('label','ttk-module-row');timeRow.append(info('소요 시간 표시','ON일 때 사유 · 1분 형태로 표시'));const timeCheck=el('input');timeCheck.type='checkbox';timeCheck.checked=settings.localization.showReasoningTime;
+ timeCheck.addEventListener('change',()=>{settings.localization.showReasoningTime=timeCheck.checked;changed();});timeRow.append(timeCheck);locBody.append(timeRow);locPanel.hidden=!settings.modules.localization;body.append(locPanel);
+
  const section=el('details','ttk-section');section.id='ttk-theme-section';section.hidden=!settings.modules.design;section.append(el('summary','ttk-section-summary','완성형 테마 및 가독성 설정'));
  const controls=el('div','ttk-controls');section.append(controls);body.append(section);
  controls.append(el('p','ttk-note','테마 선택 시 디자인 팔레트와 레이아웃만 변경합니다. 지문·대사 폰트 및 가독성 설정은 유지됩니다.'));
@@ -123,5 +133,5 @@ function build(){
  function syncControls(){for(const [id,b] of themeButtons)b.setAttribute('aria-pressed',String(id===settings.design.theme));font.value=settings.design.font;dialogueFont.value=settings.design.dialogueFont;font.updateStatus();dialogueFont.updateStatus();for(const [key,input] of Object.entries(colorInputs))input.value=settings.design.custom[key];iconStyle.value=settings.design.iconStyle;iconTone.value=settings.design.iconTone;renderPaletteChips();sliders.replaceChildren();slider(sliders,'글자 크기','size',13,23,1,v=>`${v}px`,syncPreview);slider(sliders,'줄간격','lineHeight',1.4,2.4,.05,v=>Number(v).toFixed(2),syncPreview);slider(sliders,'자간','letterSpacing',-.6,1.8,.1,v=>`${Number(v).toFixed(1)}px`,syncPreview);slider(sliders,'문단 간격','paragraphSpacing',0,32,1,v=>`${v}px`,syncPreview);syncPreview();}
  syncControls();return root;
 }
-async function main(){try{const ctx=window.SillyTavern?.getContext?.();if(!ctx?.extensionSettings||!ctx?.saveSettingsDebounced)throw Error('SillyTavern context unavailable');settings=merge(ctx.extensionSettings[KEY]);ctx.extensionSettings[KEY]=settings;save=()=>ctx.saveSettingsDebounced();const target=document.querySelector('#extensions_settings2')||document.querySelector('#extensions_settings');if(!target)throw Error('확장 설정 패널을 찾을 수 없습니다.');document.getElementById('ttk-panel')?.remove();target.append(build());applyDesign(settings.modules.design,settings.design);syncDialogueHighlights(settings.modules.design);console.info('[Tavern Toolkit] Complete theme layer v0.2.5 ready');}catch(e){teardownDesign();console.error('[Tavern Toolkit] Initialization failed',e);}}
+async function main(){try{const ctx=window.SillyTavern?.getContext?.();if(!ctx?.extensionSettings||!ctx?.saveSettingsDebounced)throw Error('SillyTavern context unavailable');settings=merge(ctx.extensionSettings[KEY]);ctx.extensionSettings[KEY]=settings;save=()=>ctx.saveSettingsDebounced();const target=document.querySelector('#extensions_settings2')||document.querySelector('#extensions_settings');if(!target)throw Error('확장 설정 패널을 찾을 수 없습니다.');document.getElementById('ttk-panel')?.remove();target.append(build());applyDesign(settings.modules.design,settings.design);syncDialogueHighlights(settings.modules.design);syncLocalization();console.info('[Tavern Toolkit] v0.2.7 design + reasoning title localization ready');}catch(e){teardownDesign();console.error('[Tavern Toolkit] Initialization failed',e);}}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',main,{once:true});else main();

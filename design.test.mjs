@@ -24,3 +24,19 @@ test('porcelain is pure white and preserves font and previously selected palette
  const edited=normalizeDesign({...next,palettes:{...next.palettes,porcelain:{...next.custom,accent:'#153E82',border:'#97B2D4'}}});
  assert.equal(selectTheme(selectTheme(edited,'studio'),'porcelain').custom.accent,'#153E82');
 });
+
+import {readFileSync} from 'node:fs';
+const sheet=readFileSync(new URL('./style.css',import.meta.url),'utf8');
+test('Paper and Studio enforce full-width user and AI cards',()=>{
+ for(const theme of ['paper','studio']){
+  assert.match(sheet,new RegExp(`html\\[data-ttk-theme="${theme}"\\] #chat \\.mes\\[is_user="true"\\]`));
+ }
+ assert.match(sheet,/margin-inline:0!important/);
+ assert.match(sheet,/width:100%!important/);
+});
+test('reasoning controls theme background and text instead of gray',()=>{
+ assert.match(sheet,/mes_reasoning_header/);
+ assert.match(sheet,/mes_reasoning_summary/);
+ assert.match(sheet,/background:var\(--ttk-raised\)!important/);
+ assert.match(sheet,/color:var\(--ttk-text\)!important/);
+});
