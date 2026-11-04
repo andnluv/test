@@ -29,7 +29,9 @@ export function cleanTranslation(raw,original){
 export const PROMPT_NAME_SELECTOR='[data-pm-name][class*="prompt_manager_prompt_name"]';
 const displayed=new Map();
 function nameLabel(element){
- return element.querySelector('a.prompt-manager-inspect-action, span[title]:not(.fa-solid):not(.fa-regular)');
+ // Native versions may wrap the name with glyphs or auxiliary spans.
+ // The name anchor remains the only editable display surface.
+ return element.querySelector('a.prompt-manager-inspect-action, .prompt-manager-inspect-action, span[title]:not(.fa-solid):not(.fa-regular)');
 }
 export function getPromptLabels(root=document){
  const elements=[];
@@ -38,9 +40,22 @@ export function getPromptLabels(root=document){
  return elements.map(element=>({element,source:(element.getAttribute('data-pm-name')||'').trim()})).filter(x=>x.source && nameLabel(x.element));
 }
 export function isTranslationCandidate(source){
- // Model can translate Latin/CJK labels; already-Korean labels need no request.
  const s=String(source||'').trim();
  return !!s && /[A-Za-z\u3400-\u9FFF\u3040-\u30FF]/u.test(s) && !(/^[\p{Script=Hangul}\s\d\p{P}\p{S}]+$/u.test(s));
+}
+// Native names can contain nested spans and icon elements. Replacing textContent
+// destroys those nodes, while rejecting mixed-content labels leaves the cache
+// translated but the name untranslated. Retain every element and each text node.
+function textParts(label){
+ const parts=[];
+ const iterator=document.createTreeWalker(label,NodeFilter.SHOW_TEXT,{
+  acceptNode(node){
+   if(node.parentElement?.closest('svg,button,input,textarea,select,script,style,[contenteditable="true"],.fa,.fas,.far,.fa-solid,.fa-regular,[data-ttk-ignore-name]'))return NodeFilter.FILTER_REJECT;
+   return node.nodeValue?.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;
+  }
+ });
+ while(iterator.nextNode())parts.push(iterator.currentNode);
+ return parts;
 }
 function showName({element,source},translated){
  const label=nameLabel(element);
@@ -51,16 +66,23 @@ function showName({element,source},translated){
  }
  if(!translated){restoreElement(element);return;}
  if(!state){
-  // Native name label contains text only. Do not mutate if future ST markup differs.
-  if([...label.childNodes].some(n=>n.nodeType!==3))return;
-  state={source,label,original:label.textContent};displayed.set(element,state);
+  const parts=textParts(label);
+  if(!parts.length)return;
+  // Preserve nested icons and links; only existing name text nodes are changed.
+  // The native prompt identifier remains in data-pm-name and its preset.
+  state={source,label,snapshots:parts.map(n=>[n,n.nodeValue])};
+  displayed.set(element,state);
  }
- if(label.textContent!==translated)label.textContent=translated;
+ const [first,...rest]=state.snapshots;
+ if(first[0].isConnected && first[0].nodeValue!==translated)first[0].nodeValue=translated;
+ for(const [node] of rest)if(node.isConnected && node.nodeValue!=='')node.nodeValue='';
  element.classList.add('ttk-prompt-localized');
 }
 function restoreElement(element){
  const state=displayed.get(element);if(!state)return;
- if(state.label.isConnected && state.label.textContent!==state.original)state.label.textContent=state.original;
+ for(const [node,original] of state.snapshots){
+  if(node.isConnected && node.nodeValue!==original)node.nodeValue=original;
+ }
  element.classList.remove('ttk-prompt-localized');displayed.delete(element);
 }
 export function restoreAllPromptNames(){for(const element of [...displayed.keys()])restoreElement(element);}

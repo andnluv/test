@@ -506,3 +506,98 @@ html[data-ttk-theme][data-ttk-icon-tone=accent]
       .fa-cubes,.fa-face-smile,.fa-address-card)::before {
   background-color:var(--ttk-accent)!important;
 }
+
+/* v0.3.5: high-contrast native prompt names and readable native typography.
+   Never paint a replacement label above the original text or mutate its layout. */
+html[data-ttk-theme] [data-pm-name].ttk-prompt-localized
+  :is(a.prompt-manager-inspect-action,.prompt-manager-inspect-action,span[title]:not(.fa)) {
+  color:var(--ttk-text)!important;
+  -webkit-text-fill-color:var(--ttk-text)!important;
+  -webkit-text-stroke:0!important;
+  text-shadow:none!important;
+  filter:none!important;
+  opacity:1!important;
+  visibility:visible!important;
+  font-size:inherit!important;
+  font-style:normal!important;
+  white-space:normal!important;
+  word-break:keep-all!important;
+  overflow-wrap:break-word!important;
+  writing-mode:horizontal-tb!important;
+}
+/* Clean the inherited native ST outline/blur and effects for text only.
+   The WHITE reference disables blur and shadows at the theme level;
+   because this extension must not overwrite the native saved theme, do it
+   with CSS limited to the active toolkit theme. */
+html[data-ttk-theme] :is(#chat,#left-nav-panel,#right-nav-panel,
+  #top-settings-holder,#extensions_settings,#extensions_settings2,
+  .popup,.dialogue_popup,.ui-dialog) {
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html[data-ttk-theme] :is(#chat,#left-nav-panel,#right-nav-panel,
+  #top-settings-holder,#extensions_settings,#extensions_settings2,
+  .popup,.dialogue_popup,.ui-dialog)
+  :is(.mes_text,.mes_text *, .name_text, .ch_name, .inline-drawer-header,
+      .standoutHeader, .settingsBlockHeader, .prompt-manager-inspect-action,
+      label, p, h1, h2, h3, h4, h5, h6) {
+  text-shadow:none!important;
+  -webkit-text-stroke-width:0!important;
+  -webkit-text-stroke-color:transparent!important;
+  filter:none!important;
+  -webkit-filter:none!important;
+}
+html[data-ttk-theme] #chat .mes_text,
+html[data-ttk-theme] #chat .mes_text * {
+  text-rendering:auto!important;
+  -webkit-font-smoothing:auto!important;
+  font-kerning:normal;
+}
+html[data-ttk-theme] :is(#left-nav-panel,#right-nav-panel,#extensions_settings,#extensions_settings2)
+  :is(.standoutHeader,.inline-drawer-header,.settingsBlockHeader) {
+  background-image:none!important;
+  box-shadow:none!important;
+}
+
+
+/* v0.3.6 — checkbox rendering repair.
+   Preserve native input semantics, checked/unchecked state, and existing
+   toggles/switches. Apply only to real checkbox controls, not switch widgets. */
+html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox),
+#ttk-panel input[type="checkbox"] {
+  -webkit-appearance: checkbox !important;
+  appearance: checkbox !important;
+  display: inline-block !important;
+  position: static !important;
+  box-sizing: border-box !important;
+  width: 16px !important;
+  min-width: 16px !important;
+  max-width: 16px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  max-height: 16px !important;
+  margin: 0 5px 0 0 !important;
+  padding: 0 !important;
+  border-radius: 3px !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+  vertical-align: middle !important;
+  accent-color: var(--ttk-accent, #587997) !important;
+}
+html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox)::before,
+html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox)::after,
+#ttk-panel input[type="checkbox"]::before,
+#ttk-panel input[type="checkbox"]::after {
+  content: none !important;
+  display: none !important;
+}
+html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox):focus-visible,
+#ttk-panel input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--ttk-accent, #587997) !important;
+  outline-offset: 2px !important;
+}
