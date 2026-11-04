@@ -744,3 +744,54 @@ html[data-ttk-theme] :is(input,textarea,select):disabled {
   color:var(--ttk-muted)!important;
   opacity:1!important;
 }
+
+/* v0.3.10 — Top navigation: never paint a tile behind an icon.
+   Scope to the toolbar. Do not change flyouts, dialogs or the icon glyphs. */
+html[data-ttk-theme] #top-settings-holder :is(
+  .drawer, .drawer-toggle, .drawer-icon, .menu_button, .right_menu_button,
+  .top-menu-button, [id$="-settings-button"], [id$="-drawer-toggle"],
+  [id$="DrawerIcon"]
+),
+html[data-ttk-theme] #top-bar :is(
+  .drawer, .drawer-toggle, .drawer-icon, .menu_button, .right_menu_button,
+  .top-menu-button, [id$="-settings-button"], [id$="-drawer-toggle"],
+  [id$="DrawerIcon"]
+),
+html[data-ttk-theme] #top-settings :is(
+  .drawer, .drawer-toggle, .drawer-icon, .menu_button, .right_menu_button,
+  .top-menu-button, [id$="-settings-button"], [id$="-drawer-toggle"],
+  [id$="DrawerIcon"]
+) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  -webkit-filter: none !important;
+  text-shadow: none !important;
+}
+/* No permanent squares on hover, focus, selected, or expanded tabs. */
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
+  :is(.drawer,.drawer-toggle,.menu_button,.right_menu_button,.top-menu-button,
+      [id$="-settings-button"],[id$="-drawer-toggle"], [id$="DrawerIcon"])
+  :is(:hover,:focus,:focus-visible,.active,.openIcon,[aria-expanded="true"]) {
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+/* Accessibility: keyboard focus retains a small underline, not a box. */
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
+  :is(.drawer-toggle,.menu_button,.right_menu_button,.top-menu-button):focus-visible {
+  outline: none !important;
+  box-shadow: inset 0 -2px 0 var(--ttk-accent) !important;
+}
+/* Protect the glyph: inherited SVG masks / Font Awesome ::before remain intact. */
+html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
+  :is(.drawer-icon,.fa,.fas,.far,.fa-solid,.fa-regular) {
+  opacity: 1 !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
