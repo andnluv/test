@@ -1,4 +1,4 @@
-import { applyDesign, normalizeDesign, THEMES, FONTS } from './modules/design.js';
+import { applyDesign, normalizeDesign, THEMES, FONTS } from './design.js';
 
 const KEY = 'tavern_toolkit_independent';
 const DEFAULTS = {
