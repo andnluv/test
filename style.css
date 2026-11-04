@@ -464,3 +464,17 @@ html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-paper-plane::before {
 #ttk-panel .ttk-translation-edit{padding:8px 0;border-bottom:1px solid var(--ttk-border,rgba(128,128,128,.2))}
 #ttk-panel .ttk-translation-edit>small{overflow-wrap:anywhere;opacity:.85}
 #ttk-panel .ttk-translation-edit .ttk-actions{display:flex;gap:6px;flex-wrap:wrap}
+
+/* v0.3.1: only one localized name is painted inside the native prompt row. */
+[data-pm-name].ttk-prompt-localized .ttk-prompt-name-display {
+  display:inline!important;position:static!important;float:none!important;
+  font-size:inherit!important;font-family:inherit!important;font-weight:inherit!important;
+  font-style:inherit!important;line-height:inherit!important;color:inherit!important;
+  opacity:1!important;visibility:visible!important;white-space:normal!important;
+  text-shadow:none!important;filter:none!important;overflow-wrap:anywhere!important;
+}
+/* Cover ST versions that emit the native name as a generated pseudo-element. */
+[data-pm-name].ttk-prompt-localized::before,
+[data-pm-name].ttk-prompt-localized::after {
+  content:none!important;
+}

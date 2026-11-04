@@ -24,11 +24,62 @@ export function cleanTranslation(raw,original){
  if(!value||value.length>100||value.includes('\n')||value.includes('```')||value===original)return '';
  return value;
 }
-const labelNode=element=>element.querySelector(':scope > a.prompt-manager-inspect-action, :scope > span[title]') || element.querySelector('a.prompt-manager-inspect-action, span[title]');
-export function getPromptLabels(root=document){
- return [...root.querySelectorAll(PROMPT_NAME_SELECTOR)].map(element=>({element,node:labelNode(element),source:(element.getAttribute('data-pm-name')||'').trim()})).filter(item=>item.node&&item.source);
+// SillyTavern may render the same prompt name in more than one label node.
+// Never replace the entire row/anchor: those elements also own click handlers and icons.
+const LABEL_SELECTOR='a.prompt-manager-inspect-action, span[title]';
+const displayed=new Map();
+function textNodesOf(element){
+ const found=[];
+ const walk=node=>{
+  if(node.nodeType===3){found.push(node);return;}
+  if(node.nodeType!==1 || node.matches?.('button,input,textarea,select,svg,.fa,.fas,.far,.fa-solid,.fa-regular,[data-ttk-prompt-text]'))return;
+  for(const child of node.childNodes)walk(child);
+ };
+ walk(element);return found;
 }
-function restoreName(item){if(item.node.dataset.ttkTranslatedName!==undefined){item.node.textContent=item.source;delete item.node.dataset.ttkTranslatedName;}}
+function candidates(element){
+ const nodes=[...element.querySelectorAll(LABEL_SELECTOR)];
+ return nodes.filter(n=>!n.closest('button') && n.closest(PROMPT_NAME_SELECTOR)===element);
+}
+export function getPromptLabels(root=document){
+ const elements=[];
+ if(root.matches?.(PROMPT_NAME_SELECTOR))elements.push(root);
+ elements.push(...root.querySelectorAll(PROMPT_NAME_SELECTOR));
+ return elements.map(element=>({element,source:(element.getAttribute('data-pm-name')||'').trim()})).filter(x=>x.source);
+}
+// Hide every native copy of the name, retain its exact text nodes for restoration.
+// Show exactly one dedicated label, leaving non-name icons and all event listeners intact.
+function showName(item,value){
+ const {element,source}=item;
+ let state=displayed.get(element);
+ if(state && state.source!==source){restoreElement(element);state=null;}
+ if(!value){restoreElement(element);return;}
+ if(!state){
+  const labels=candidates(element);
+  if(!labels.length)return; // unknown ST markup: fail safe, do not corrupt the row
+  const snapshots=[];
+  for(const node of labels){
+   for(const text of textNodesOf(node)){snapshots.push([text,text.nodeValue]);text.nodeValue='';}
+  }
+  // In some builds the wrapper also has an unwrapped text name.
+  for(const child of element.childNodes){if(child.nodeType===3 && child.nodeValue.trim()){
+   snapshots.push([child,child.nodeValue]);child.nodeValue='';
+  }}
+  const label=document.createElement('span');
+  label.className='ttk-prompt-name-display';label.setAttribute('data-ttk-prompt-text','');
+  label.textContent=value;
+  labels[0].prepend(label);
+  state={source,snapshots,label};displayed.set(element,state);
+  element.classList.add('ttk-prompt-localized');
+ }else if(state.label.textContent!==value)state.label.textContent=value;
+}
+function restoreElement(element){
+ const state=displayed.get(element);if(!state)return;
+ state.label.remove();
+ for(const [node,original] of state.snapshots){if(node.isConnected)node.nodeValue=original;}
+ element.classList.remove('ttk-prompt-localized');displayed.delete(element);
+}
+export function restoreAllPromptNames(){for(const element of [...displayed.keys()])restoreElement(element);}
 export class PromptNameTranslator{
  constructor({getSettings,save,onStatus,onCacheChanged}={}){
   this.getSettings=getSettings;this.save=save||(()=>{});this.onStatus=onStatus||(()=>{});this.onCacheChanged=onCacheChanged||(()=>{});
@@ -60,13 +111,12 @@ export class PromptNameTranslator{
   this.observer.observe(root,{subtree:true,childList:true});
   this.scan();
  }
- stop(){this.enabled=false;this.runId++;this.controller?.abort();this.controller=null;clearTimeout(this.timer);this.timer=null;this.observer?.disconnect();this.observer=null;for(const item of getPromptLabels())restoreName(item);this.onStatus('한글화 OFF · 원래 이름 표시');}
+ stop(){this.enabled=false;this.runId++;this.controller?.abort();this.controller=null;clearTimeout(this.timer);this.timer=null;this.observer?.disconnect();this.observer=null;restoreAllPromptNames();this.onStatus('한글화 OFF · 원래 이름 표시');}
  schedule(){if(!this.enabled)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.scan(),250);}
  applyCached(){
   const cache=this.getSettings().cache;
   for(const item of getPromptLabels()){
-   const text=cache[item.source];if(text){if(item.node.textContent!==text)item.node.textContent=text;item.node.dataset.ttkTranslatedName=text;}
-   else restoreName(item);
+   const text=cache[item.source];showName(item,text||'');
   }
  }
  scan(){if(!this.enabled)return;this.applyCached();if(this.getSettings().autoTranslate)this.translateMissing();}
@@ -76,7 +126,7 @@ export class PromptNameTranslator{
   if(!profile)return;
   if(!this.getProfiles().some(p=>p.id===profile)){this.onStatus('저장된 번역 프로필을 선택해 주세요.');return;}
   const missing=[...new Set(getPromptLabels().map(p=>p.source).filter(x=>!config.cache[x]&&!/^[\d\W]+$/u.test(x)))].slice(0,MAX_ITEMS);
-  if(!missing.length){this.onStatus('표시된 토글 이름 번역 완료');return;}
+  if(!missing.length){this.onStatus('현재 표시된 토글 이름은 모두 번역되었거나 번역 대상이 아닙니다.');return;}
   this.running=true;const generation=this.runId;const controller=new AbortController();this.controller=controller;
   try{
    const service=await this.loadService();let completed=0;
@@ -92,7 +142,7 @@ export class PromptNameTranslator{
     }catch(error){if(controller.signal.aborted)break;console.warn('[Tavern Toolkit] prompt translation:',source,error);this.onStatus(`번역 오류 · ${source} (나머지 진행)`);}
     completed++;
    }
-   if(this.enabled&&generation===this.runId)this.onStatus(`번역 검사 완료 · ${completed}/${missing.length}개 요청`);
+   if(this.enabled&&generation===this.runId){const stillMissing=[...new Set(getPromptLabels().map(p=>p.source).filter(x=>!this.getSettings().cache[x]))];this.onStatus(stillMissing.length?`요청 ${completed}개 완료 · 아직 미번역 ${stillMissing.length}개 (원문 표시)`:'표시된 토글 이름 번역 완료');}
   }catch(error){this.onStatus(`번역 연결 오류 · ${error.message}`);console.warn('[Tavern Toolkit]',error);}
   finally{this.running=false;if(this.controller===controller)this.controller=null;}
  }
