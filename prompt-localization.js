@@ -1,7 +1,7 @@
 /** Independent, display-only localization for native SillyTavern Prompt Manager names.
  * No preset or connection profile is ever switched or modified.
  */
-export const DEFAULT_PROMPT_TRANSLATION=Object.freeze({profileId:'',autoTranslate:true,cache:{}});
+export const DEFAULT_PROMPT_TRANSLATION=Object.freeze({profileId:'',autoTranslate:true,cache:{},kept:[]});
 const MAX_ITEMS=600;
 export function normalizePromptTranslation(raw={}){
  const r=raw&&typeof raw==='object'?raw:{};
@@ -13,7 +13,9 @@ export function normalizePromptTranslation(raw={}){
    if(translated)cache[key]=translated;
   }
  }
- return {profileId:typeof r.profileId==='string'?r.profileId.slice(0,180):'',autoTranslate:r.autoTranslate!==false,cache};
+ // Names the model returned unchanged (proper nouns etc.). Remembered so they are not re-requested on every repaint.
+ const kept=Array.isArray(r.kept)?[...new Set(r.kept.filter(x=>typeof x==='string'&&x&&x.length<=180&&!cache[x]))].slice(0,MAX_ITEMS):[];
+ return {profileId:typeof r.profileId==='string'?r.profileId.slice(0,180):'',autoTranslate:r.autoTranslate!==false,cache,kept};
 }
 export function cleanTranslation(raw,original){
  let value=String(raw??'').trim();
@@ -41,7 +43,8 @@ export function getPromptLabels(root=document){
 }
 export function isTranslationCandidate(source){
  const s=String(source||'').trim();
- return !!s && /[A-Za-z\u3400-\u9FFF\u3040-\u30FF]/u.test(s) && !(/^[\p{Script=Hangul}\s\d\p{P}\p{S}]+$/u.test(s));
+ // v0.3.14: a name that already contains Hangul (e.g. "홍린 · HONGRIN") is treated as localized and is never sent.
+ return !!s && /[A-Za-z\u3400-\u9FFF\u3040-\u30FF]/u.test(s) && !/\p{Script=Hangul}/u.test(s);
 }
 // Native names can contain nested spans and icon elements. Replacing textContent
 // destroys those nodes, while rejecting mixed-content labels leaves the cache
@@ -92,16 +95,18 @@ function extractText(response){
  if(Array.isArray(response?.content))return response.content.map(p=>p?.text||'').join('');
  return response?.choices?.[0]?.message?.content||response?.text||'';
 }
-export function parseBatch(raw,sources){
+export function parseBatch(raw,sources,same=null){
+ const note=(value,source)=>{if(same&&typeof value==='string'&&value.trim()===source)same.add(source);};
  const text=String(raw||'').trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
  let parsed;
  try{parsed=JSON.parse(text);}catch{return new Map();}
  const map=new Map();
  if(Array.isArray(parsed)){
-  parsed.forEach((v,i)=>{if(i<sources.length){const cleaned=cleanTranslation(v,sources[i]);if(cleaned)map.set(sources[i],cleaned);}});
+  parsed.forEach((v,i)=>{if(i<sources.length){note(v,sources[i]);const cleaned=cleanTranslation(v,sources[i]);if(cleaned)map.set(sources[i],cleaned);}});
  }else if(parsed&&typeof parsed==='object'){
   for(const [i,source] of sources.entries()){
    const value=parsed[source]??parsed[String(i+1)]??parsed[String(i)];
+   note(value,source);
    const cleaned=cleanTranslation(value,source);
    if(cleaned)map.set(source,cleaned);
   }
@@ -111,7 +116,7 @@ export function parseBatch(raw,sources){
 export class PromptNameTranslator{
  constructor({getSettings,save,onStatus,onCacheChanged}={}){
   this.getSettings=getSettings;this.save=save||(()=>{});this.onStatus=onStatus||(()=>{});this.onCacheChanged=onCacheChanged||(()=>{});
-  this.enabled=false;this.observer=null;this.timer=null;this.controller=null;this.running=false;this.runId=0;this.service=null;
+  this.enabled=false;this.observer=null;this.timer=null;this.controller=null;this.activeRun=null;this.runId=0;this.service=null;this.failures=new Map();
  }
  getProfiles(){
   const ctx=window.SillyTavern?.getContext?.();
@@ -143,17 +148,24 @@ export class PromptNameTranslator{
  schedule(){if(!this.enabled)return;clearTimeout(this.timer);this.timer=setTimeout(()=>this.scan(),250);}
  applyCached(){
   const cache=this.getSettings().cache;
+  // The prompt manager is rebuilt on every toggle; drop records of rows that no longer exist.
+  for(const element of [...displayed.keys()])if(!element.isConnected)displayed.delete(element);
   for(const item of getPromptLabels()){
    const text=cache[item.source];showName(item,text||'');
   }
  }
  scan(){if(!this.enabled)return;this.applyCached();if(this.getSettings().autoTranslate)this.translateMissing();}
- async translateMissing(){
-  if(!this.enabled||this.running)return;
+ /** @param {boolean} force manual run: also retries names kept as-is or that failed earlier in this session */
+ async translateMissing(force=false){
+  if(!this.enabled||this.activeRun)return;
   const profile=this.getSettings().profileId;
   if(!profile)return;
   if(!this.getProfiles().some(p=>p.id===profile)){this.onStatus('저장된 번역 프로필을 선택해 주세요.');return;}
-  this.running=true;
+  const run={};this.activeRun=run;
+  if(force)this.failures.clear();
+  const keptSet=new Set(force?[]:this.getSettings().kept||[]);
+  const skip=x=>keptSet.has(x)||(!force&&(this.failures.get(x)||0)>=2);
+  let emptyResponses=0;
   const generation=this.runId,controller=new AbortController();this.controller=controller;
   const failed=new Set();let translated=0,attempted=0;
   const active=()=>this.enabled&&this.runId===generation&&!controller.signal.aborted&&this.getSettings().profileId===profile;
@@ -168,7 +180,7 @@ export class PromptNameTranslator{
    let processed=new Set();
    while(active()){
     const all=[...new Set(getPromptLabels().map(x=>x.source).filter(isTranslationCandidate))];
-    const pending=all.filter(x=>!this.getSettings().cache[x]&&!processed.has(x));
+    const pending=all.filter(x=>!this.getSettings().cache[x]&&!processed.has(x)&&!skip(x));
     if(!pending.length||processed.size>=600)break;
     const batch=pending.slice(0,8);
     batch.forEach(x=>processed.add(x));attempted+=batch.length;
@@ -178,32 +190,39 @@ export class PromptNameTranslator{
       {role:'system',content:'Translate the supplied JSON array of UI label strings to natural Korean. Output ONLY one JSON array with exactly the same number of strings and the same order. Preserve emojis, placeholders, symbols, IDs, and special tokens. Do not add explanations.'},
       {role:'user',content:JSON.stringify(batch)}
      ];
-     const response=await service.sendRequest(profile,messages,Math.min(1100,Math.max(200,batch.length*110)),{stream:false,signal:controller.signal,includePreset:false,includeInstruct:false});
+     // Reasoning models spend output tokens on thinking first; keep generous headroom so the answer is not empty.
+     const response=await service.sendRequest(profile,messages,Math.min(2400,Math.max(600,batch.length*160)),{stream:false,signal:controller.signal,includePreset:false,includeInstruct:false});
      if(!active())break;
-     const parsed=parseBatch(extractText(response),batch);
+     const text=extractText(response);if(!String(text||'').trim())emptyResponses++;
+     const same=new Set();
+     const parsed=parseBatch(text,batch,same);
      saveResults(parsed);
-     for(const source of batch)if(!parsed.has(source))failed.add(source);
+     if(same.size){const s=this.getSettings();s.kept=[...new Set([...(s.kept||[]),...same])].filter(x=>!s.cache[x]).slice(-MAX_ITEMS);same.forEach(x=>keptSet.add(x));this.save();}
+     for(const source of batch)if(!parsed.has(source)&&!same.has(source)){failed.add(source);this.failures.set(source,(this.failures.get(source)||0)+1);}
     }catch(error){
      if(!active())break;
      console.warn('[Tavern Toolkit] prompt translation batch',error);
-     batch.forEach(x=>failed.add(x));
+     batch.forEach(x=>{failed.add(x);this.failures.set(x,(this.failures.get(x)||0)+1);});
     }
     // Yield to UI and rate-limited providers between requests.
     await new Promise(resolve=>setTimeout(resolve,250));
    }
    if(active()){
     const all=[...new Set(getPromptLabels().map(x=>x.source).filter(isTranslationCandidate))];
-    const remaining=all.filter(x=>!this.getSettings().cache[x]);
-    this.onStatus(remaining.length?`번역 성공 ${translated}개 · 미번역 ${remaining.length}개 (다시 시도 가능)`:`현재 표시된 토글 ${all.length}개 번역 완료`);
+    const kept=all.filter(x=>!this.getSettings().cache[x]&&keptSet.has(x)).length;
+    const remaining=all.filter(x=>!this.getSettings().cache[x]&&!keptSet.has(x));
+    const keptNote=kept?` · 원문 유지 ${kept}개`:'';
+    if(emptyResponses&&remaining.length)this.onStatus(`빈 응답 ${emptyResponses}회 · 미번역 ${remaining.length}개${keptNote} · 추론 모델이면 출력 토큰이 부족할 수 있습니다. '현재 토글 번역'으로 다시 시도하세요.`);
+    else this.onStatus(remaining.length?`번역 성공 ${translated}개 · 미번역 ${remaining.length}개${keptNote} ('현재 토글 번역'으로 다시 시도)`:`현재 표시된 토글 ${all.length}개 처리 완료${keptNote}`);
    }
   }catch(error){console.warn('[Tavern Toolkit]',error);if(active())this.onStatus(`번역 연결 오류 · ${error.cause?.message||error.message}`);}
-  finally{this.running=false;if(this.controller===controller)this.controller=null;}
+  finally{if(this.activeRun===run)this.activeRun=null;if(this.controller===controller)this.controller=null;}
  }
- refresh(){this.runId++;this.controller?.abort();this.running=false;this.scan();}
+ refresh(){this.runId++;this.controller?.abort();this.activeRun=null;this.failures.clear();this.scan();}
  setOverride(original,translated){
   const cache=this.getSettings().cache;const clean=String(translated??'').trim().slice(0,100);
-  if(clean)cache[original]=clean;else delete cache[original];
+  if(clean){cache[original]=clean;const s=this.getSettings();if(s.kept?.includes(original))s.kept=s.kept.filter(x=>x!==original);}else delete cache[original];
   this.save();this.applyCached();this.onCacheChanged();
  }
- clearCache(){this.runId++;this.controller?.abort();this.running=false;this.getSettings().cache=Object.create(null);this.save();this.applyCached();this.onCacheChanged();this.onStatus('번역 캐시를 초기화했습니다.');}
+ clearCache(){this.runId++;this.controller?.abort();this.activeRun=null;this.failures.clear();this.getSettings().kept=[];this.getSettings().cache=Object.create(null);this.save();this.applyCached();this.onCacheChanged();this.onStatus('번역 캐시를 초기화했습니다.');}
 }
