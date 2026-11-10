@@ -22,12 +22,12 @@ export const FONTS = Object.freeze({
  ridibatang:{name:'리디바탕',category:'serif',source:'web',face:{family:'RIDIBatang',url:JSD+'projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff',format:'woff'},family:`"RIDIBatang", ${SERIF}`},
  kopubbatang:{name:'KoPub 바탕',category:'serif',source:'web',css:JSD+'adrinerDP/font-kopubworld@28997aceeb0fa6322357b03b63aaf292e74868f4/css/batang.css',family:`"KoPubWorld Batang", ${SERIF}`},
  hahmlet:{name:'함렡',category:'serif',source:'web',css:GF('Hahmlet:wght@400;500;600;700'),family:`"Hahmlet", ${SERIF}`},
- busandandi:{name:'부산단디명조',category:'serif',source:'local',family:`"BusanDandi", "부산단디명조", ${SERIF}`},
+ busandandi:{name:'부산단디명조',category:'serif',source:'web',face:[300,500,700].map((weight,i)=>({family:'BusanDandiMyeongjo',url:JSD+`Project-Noonnu/2610132210@l-2/l/부산단디명조${'LMB'[i]}.woff2`,format:'woff2',weight})),family:`"BusanDandiMyeongjo", ${SERIF}`},
  zenserif:{name:'Zen Old Mincho',category:'serif',source:'web',css:GF('Zen+Old+Mincho:wght@400;500;700'),family:`"Zen Old Mincho", ${SERIF}`},
  mona12:{name:'모나12',category:'decor',source:'web',css:JSD+'MonadABXY/mona-font@2026.10.09/web/mona.css',family:`"Mona12", ${GOTHIC}`},
- sanhayeop:{name:'산하엽',category:'decor',source:'local',family:`"산하엽", "Sanhayeop", ${SERIF}`},
+ sanhayeop:{name:'산하엽',category:'decor',source:'web',face:{family:'Sanhayeop',url:JSD+'projectnoonnu/noonfonts_JAMO@1.0/Diphylleia-Regular.woff2',format:'woff2'},family:`"Sanhayeop", ${SERIF}`},
  gangwon:{name:'강원교육새음체',category:'decor',source:'web',face:{family:'GangwonEduSaeeum',url:JSD+'projectnoonnu/noonfonts_2201-2@1.0/GangwonEduSaeeum_OTFMediumA.woff',format:'woff'},family:`"GangwonEduSaeeum", ${GOTHIC}`},
- geulbang:{name:'그리운X국한박 글방구리체',category:'decor',source:'local',family:`"그리운X국한박 글방구리체", "글방구리체", ${GOTHIC}`},
+ geulbang:{name:'그리운X국한박 글방구리체',category:'decor',source:'web',face:{family:'GeuriunXGukhanbakGeulbangGuri',url:JSD+'Project-Noonnu/2607161334@x-4/x/GriunXHangeul_Banguri-Rg.woff2',format:'woff2'},family:`"GeuriunXGukhanbakGeulbangGuri", ${GOTHIC}`},
  system:{name:'기본 시스템 글꼴',category:'gothic',source:'system',family:'system-ui, sans-serif'},
 });
 export const FONT_GROUPS = Object.freeze({gothic:'고딕',serif:'명조·바탕',decor:'꾸밈'});
@@ -66,7 +66,7 @@ export function syncFontSources(ids=[]){
  for(const id of wanted){
   const f=FONTS[id];let node;
   if(f.css){node=document.createElement('link');node.rel='stylesheet';node.href=f.css;node.crossOrigin='anonymous';}
-  else{node=document.createElement('style');node.textContent=`@font-face{font-family:'${f.face.family}';src:url('${f.face.url}') format('${f.face.format}');font-weight:400;font-display:swap}`;}
+  else{node=document.createElement('style');node.textContent=[].concat(f.face).map(face=>`@font-face{font-family:'${face.family}';src:url('${encodeURI(face.url)}') format('${face.format}');font-weight:${face.weight||400};font-display:swap}`).join('\n');}
   node.setAttribute(FONT_ATTR,id);document.head.append(node);
  }
 }

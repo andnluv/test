@@ -112,9 +112,7 @@ function build(){
   const note=el('small','ttk-font-status');
   const updateStatus=async()=>{
     const id=select.value,f=FONTS[id];if(!f)return;
-    if(f.source==='local'){
-      note.textContent='기기 설치 글꼴 · 공개 웹폰트 주소가 없어 이 기기에 설치되어 있어야 표시됩니다';
-    }else if(f.source==='web'){
+    if(f.source==='web'){
       note.textContent='웹폰트 불러오는 중…';
       const first=f.family.split(',')[0];
       try{
