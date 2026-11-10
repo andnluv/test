@@ -815,3 +815,131 @@ html[data-ttk-theme] * {scrollbar-color:color-mix(in srgb,var(--ttk-muted) 55%,t
   #ttk-panel .ttk-theme-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
   #ttk-panel .ttk-color-grid {grid-template-columns:1fr}
 }
+
+/* ==========================================================================
+   v0.4.0 — translation module
+   Structure works with or without the design module (falls back to SillyTavern's own colours).
+   ========================================================================== */
+#chat .mes {
+  --ttk-tr-ink:var(--ttk-text,var(--SmartThemeBodyColor));
+  --ttk-tr-muted:var(--ttk-muted,var(--SmartThemeEmColor));
+  --ttk-tr-line:var(--ttk-border,var(--SmartThemeBorderColor));
+  --ttk-tr-accent:var(--ttk-accent,var(--SmartThemeQuoteColor));
+  --ttk-tr-raised:var(--ttk-raised,color-mix(in srgb,var(--SmartThemeBodyColor) 6%,transparent));
+}
+#chat .ttk-tr {margin-top:0;min-width:0}
+#chat .ttk-tr-text {overflow-wrap:anywhere}
+#chat .ttk-tr-text p {margin:0 0 var(--ttk-para,.8em)}
+#chat .ttk-tr-text p:last-child {margin-bottom:0}
+#chat .ttk-tr-bar {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:4px 10px;margin-top:8px;font-size:12px;line-height:1.4;color:var(--ttk-tr-muted)}
+#chat .ttk-tr-label {letter-spacing:.06em;font-weight:600}
+#chat .ttk-tr-actions {display:inline-flex;gap:2px;margin-left:auto}
+#chat .ttk-tr-actions button {
+  all:unset;cursor:pointer;padding:3px 7px;border-radius:5px;font-size:12px;color:var(--ttk-tr-muted);
+}
+#chat .ttk-tr-actions button:hover {color:var(--ttk-tr-ink);background:var(--ttk-tr-raised)}
+#chat .ttk-tr-actions button:focus-visible {outline:2px solid var(--ttk-tr-accent);outline-offset:1px}
+#chat .ttk-tr-actions button[hidden] {display:none}
+#chat .mes .ttk-tr-button.ttk-tr-button-active {color:var(--ttk-tr-accent)!important;opacity:1}
+#chat .mes.ttk-tr-busy .ttk-tr-button {animation:ttk-tr-pulse 1.1s ease-in-out infinite}
+#ttk_input_translate.ttk-tr-spin {animation:ttk-tr-pulse 1.1s ease-in-out infinite}
+@keyframes ttk-tr-pulse {50% {opacity:.35}}
+@media (prefers-reduced-motion:reduce) {#chat .mes.ttk-tr-busy .ttk-tr-button,#ttk_input_translate.ttk-tr-spin {animation:none;opacity:.5}}
+
+/* Mode 1 — 번역으로 교체: the original stays in the DOM, hidden; the bar switches between the two. */
+#chat .mes.ttk-tr-replace:not(.ttk-tr-original) .mes_text {display:none!important}
+#chat .mes.ttk-tr-replace.ttk-tr-original .ttk-tr-text {display:none}
+#chat .mes.ttk-tr-replace .ttk-tr-bar {margin-top:6px;padding-top:6px;border-top:1px dashed color-mix(in srgb,var(--ttk-tr-line) 80%,transparent)}
+#chat .mes.ttk-tr-replace.ttk-tr-original .ttk-tr-bar {border-top:0;margin-top:4px}
+
+/* Mode 2 — 원문 아래에 번역 추가: the original sits in a theme-specific "원문" plate, the translation follows. */
+#chat .mes.ttk-tr-below .mes_text {position:relative}
+#chat .mes.ttk-tr-below .mes_text::before {
+  content:attr(data-ttk-original-label);display:block;margin-bottom:6px;
+  font:600 11px/1.3 var(--mainFontFamily,sans-serif);letter-spacing:.12em;color:var(--ttk-tr-muted);
+}
+#chat .mes.ttk-tr-below .mes_text,
+#chat .mes.ttk-tr-below .mes_text :is(p,li,blockquote) {font-size:.9em!important;color:var(--ttk-tr-muted)!important}
+html[data-ttk-theme] #chat .mes.ttk-tr-below .mes_text :is(p,li,blockquote) {font-size:calc(var(--ttk-size) * .88)!important}
+#chat .mes.ttk-tr-below .mes_text .ttk-dialogue {color:color-mix(in srgb,var(--ttk-dialogue,var(--SmartThemeQuoteColor)) 70%,var(--ttk-tr-muted))!important;-webkit-text-fill-color:currentColor!important}
+#chat .mes.ttk-tr-below .ttk-tr {margin-top:12px}
+#chat .mes.ttk-tr-below.ttk-tr-folded .ttk-tr-text {display:none}
+#chat .mes.ttk-tr-below .ttk-tr-bar {margin-top:6px}
+/* Fallback plate (design module off). */
+#chat .mes.ttk-tr-below .mes_text {padding:10px 12px;border-radius:8px;background:var(--ttk-tr-raised);border:1px solid color-mix(in srgb,var(--ttk-tr-line) 70%,transparent)}
+
+/* Translation text uses the theme's reading typography. */
+html[data-ttk-theme] #chat .ttk-tr-text,
+html[data-ttk-theme] #chat .ttk-tr-text :is(p,li,blockquote) {font-family:var(--ttk-font)!important;font-size:var(--ttk-size)!important;line-height:var(--ttk-line)!important;letter-spacing:var(--ttk-tracking)!important;color:var(--ttk-text)!important}
+html[data-ttk-theme] #chat .ttk-tr-text p {margin:0 0 var(--ttk-para)!important}
+html[data-ttk-theme] #chat .ttk-tr-text p:last-child {margin-bottom:0!important}
+html[data-ttk-theme] #chat .ttk-tr-text .ttk-dialogue {font-family:var(--ttk-dialogueFont)!important;color:var(--ttk-dialogue)!important;-webkit-text-fill-color:var(--ttk-dialogue)!important}
+html[data-ttk-theme] #chat .ttk-tr-text :is(em,i) {color:var(--ttk-muted)}
+html[data-ttk-theme] #chat .ttk-tr-text :is(blockquote,pre) {background:var(--ttk-raised)!important;border-left:2px solid var(--ttk-accent)!important;border-radius:4px;padding:8px 12px}
+
+/* Paper — the original reads like a footnote set in the margin of a page: no box, a hairline
+   rule and a small-caps tag; the translation continues as the main text. */
+html[data-ttk-theme=paper] #chat .mes.ttk-tr-below .mes_text {
+  background:transparent;border:0;border-radius:0;padding:0 0 12px 14px;
+  border-left:1px solid var(--ttk-border)!important;
+}
+html[data-ttk-theme=paper] #chat .mes.ttk-tr-below .mes_text::before {font-family:var(--ttk-font);font-weight:400;font-style:italic;letter-spacing:.08em;font-size:12px}
+html[data-ttk-theme=paper] #chat .mes.ttk-tr-below .ttk-tr::before {
+  content:'⁂';display:block;text-align:center;margin:2px 0 12px;color:var(--ttk-accent);font-size:15px;letter-spacing:0;opacity:.8
+}
+html[data-ttk-theme=paper] #chat .mes.ttk-tr-replace .ttk-tr-bar {border-top-style:solid}
+
+/* Nocturne — the original is a dimmed, low-glare layer behind a thin silver rail. */
+html[data-ttk-theme=nocturne] #chat .mes.ttk-tr-below .mes_text {
+  background:color-mix(in srgb,var(--ttk-bg) 55%,var(--ttk-ai));border:0;border-left:2px solid var(--ttk-muted);
+  border-radius:2px 8px 8px 2px;padding:10px 13px;
+}
+html[data-ttk-theme=nocturne] #chat .mes.ttk-tr-below .mes_text :is(p,li,blockquote) {color:color-mix(in srgb,var(--ttk-muted) 82%,var(--ttk-bg))!important}
+html[data-ttk-theme=nocturne] #chat .mes.ttk-tr-below .mes_text::before {letter-spacing:.2em;font-size:10px;text-transform:uppercase}
+html[data-ttk-theme=nocturne] #chat .mes.ttk-tr-below .ttk-tr {border-top:1px dashed color-mix(in srgb,var(--ttk-border) 90%,transparent);padding-top:12px}
+
+/* Porcelain — the original is set in a fired "cartouche": white glaze, double cobalt hairline,
+   a seal tag at the corner; ◇ ─ ◇ separates it from the translation. */
+html[data-ttk-theme=porcelain] #chat .mes.ttk-tr-below .mes_text {
+  background:var(--ttk-raised);border:1px solid var(--ttk-border);border-radius:6px;padding:16px 14px 12px;margin-top:4px;
+  box-shadow:inset 0 0 0 3px var(--ttk-raised),inset 0 0 0 4px color-mix(in srgb,var(--ttk-border) 70%,transparent);
+}
+html[data-ttk-theme=porcelain] #chat .mes.ttk-tr-below .mes_text::before {
+  position:absolute;top:-9px;left:12px;margin:0;padding:1px 8px;
+  background:var(--ttk-surface);border:1px solid var(--ttk-border);border-radius:3px;
+  color:var(--ttk-accent);font-family:var(--ttk-font);font-size:11px;letter-spacing:.18em;
+}
+html[data-ttk-theme=porcelain] #chat .mes.ttk-tr-below .ttk-tr::before {
+  content:'◇  ─  ◇';display:block;text-align:center;margin:0 0 10px;color:var(--ttk-accent);font:10px/1 serif;letter-spacing:4px;opacity:.85
+}
+html[data-ttk-theme=porcelain] #chat .mes.ttk-tr-replace .ttk-tr-bar {border-top:2px double var(--ttk-border)}
+html[data-ttk-theme=porcelain] #chat .ttk-tr-label {color:var(--ttk-accent)}
+
+/* Studio — the original is a soft rounded card with a pill tag, like an app's quoted message. */
+html[data-ttk-theme=studio] #chat .mes.ttk-tr-below .mes_text {
+  background:color-mix(in srgb,var(--ttk-raised) 85%,var(--ttk-bg));border:0;border-radius:14px;padding:12px 14px;
+}
+html[data-ttk-theme=studio] #chat .mes.ttk-tr-below .mes_text::before {
+  display:inline-block;margin-bottom:8px;padding:2px 9px;border-radius:999px;
+  background:var(--ttk-surface);color:var(--ttk-accent);font-size:11px;letter-spacing:.06em;
+}
+html[data-ttk-theme=studio] #chat .mes.ttk-tr-replace .ttk-tr-bar {border-top:0;padding-top:0}
+html[data-ttk-theme=studio] #chat .ttk-tr-actions button {border-radius:999px;background:var(--ttk-raised)}
+
+/* Composer button. */
+#ttk_input_translate {cursor:pointer;font-size:var(--bottomFormIconSize,1.4em);display:flex;align-items:center;justify-content:center;opacity:.8}
+#ttk_input_translate:hover {opacity:1}
+
+/* Settings panel parts. */
+#ttk-panel .ttk-choice {border:0;margin:0;padding:0;display:grid;gap:6px}
+#ttk-panel .ttk-choice legend {font-weight:650;margin-bottom:4px;padding:0}
+#ttk-panel .ttk-choice-row {display:flex;gap:8px;align-items:flex-start;padding:6px 8px;border-radius:7px;border:1px solid transparent;cursor:pointer}
+#ttk-panel .ttk-choice-row:has(input:checked) {border-color:var(--ttk-border,rgba(128,128,128,.35));background:var(--ttk-raised,rgba(128,128,128,.08))}
+#ttk-panel .ttk-choice-row input[type=radio] {margin:3px 0 0;accent-color:var(--ttk-accent,currentColor);flex:0 0 auto}
+#ttk-panel input[type=number] {width:100%;padding:7px 9px;border-radius:6px;border:1px solid var(--ttk-border,rgba(128,128,128,.35));background:var(--ttk-surface,transparent);color:inherit}
+#ttk-panel .ttk-conflict {border:1px solid #c9822b;border-left-width:4px;border-radius:8px;padding:10px 12px;background:color-mix(in srgb,#e8a33d 12%,var(--ttk-surface,transparent));display:grid;gap:4px;font-size:12px;line-height:1.55}
+#ttk-panel .ttk-conflict[hidden] {display:none}
+#ttk-panel .ttk-conflict p,#ttk-panel .ttk-conflict ul {margin:0}
+#ttk-panel .ttk-conflict ul {padding-left:18px}
+#ttk-panel .ttk-conflict .ttk-button {justify-self:start;margin-top:4px}
+#ttk-panel .ttk-tr-status:empty {display:none}
