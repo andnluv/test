@@ -43,6 +43,8 @@ function updateNode(node) {
     node.dataset.ttkLocalizedTitle = title;
 }
 function scan(root=document) {
+    // Messages are discarded on every chat switch; forget their title nodes instead of holding them forever.
+    if (tracked.size > 400) for (const node of tracked) if (!node.isConnected) tracked.delete(node);
     if (root.nodeType === 1 && root.matches?.(SELECTOR)) updateNode(root);
     root.querySelectorAll?.(SELECTOR).forEach(updateNode);
 }

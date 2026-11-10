@@ -1,24 +1,6 @@
-/* OFL font stylesheets served by Google Fonts. Fonts themselves are not packaged here. */
-@import url('https://fonts.googleapis.com/css2?family=Hahmlet:wght@400;500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Zen+Old+Mincho:wght@400;500;700&display=swap');
-/* Mona12 by MonadABXY, OFL 1.1; hosted on the project's documented CDN. */
-@import url('https://cdn.jsdelivr.net/gh/MonadABXY/mona-font/web/mona.css');
-
-/* Additional freely available typefaces listed by Noonnu; remotely loaded, not bundled. */
-@font-face{font-family:'TTK Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
-@font-face{font-family:'TTK Pretendard';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/pretendard@1.0/Pretendard-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
-@font-face{font-family:'TTK Noonnu Basic Gothic';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noon-2410@1.0/NoonnuBasicGothicRegular.woff2') format('woff2');font-weight:400;font-display:swap}
-@font-face{font-family:'TTK Maru Buri';src:url('https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
-@font-face{font-family:'TTK Maru Buri';src:url('https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Bold.woff2') format('woff2');font-weight:700;font-display:swap}
-@font-face{font-family:'TTK Ridi Batang';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');font-weight:400;font-display:swap}
-@font-face{font-family:'TTK Seoul Hangang';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulHangangM.woff') format('woff');font-weight:400;font-display:swap}
-@font-face{font-family:'TTK Yeonseong';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/BMYEONSUNG.woff') format('woff');font-weight:400;font-display:swap}
-
-/* Tavern Toolkit 0.2.1 — three complete, original UI themes.
-   Every theme selector is gated by html[data-ttk-theme]. OFF restores the native CSS.
-   This stylesheet never assigns native SillyTavern theme variables or writes theme files. */
-@font-face{font-family:'TTK Nanum Gothic';src:url('./fonts/NanumGothic.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'TTK Nanum Barun';src:url('./fonts/NanumBarunGothic.ttf') format('truetype');font-display:swap}
-@font-face{font-family:'TTK Nanum Myeongjo';src:url('./fonts/NanumMyeongjo.ttf') format('truetype');font-display:swap}
+/* Tavern Toolkit — full theme layer.
+   Every theme selector is gated by html[data-ttk-theme]; turning the design module OFF restores the native CSS.
+   v0.3.14: no font is bundled or imported here. design.js requests only the web fonts that are selected. */
 /* Extension settings — isolated from the native UI styles. */
 #ttk-panel{border:1px solid var(--SmartThemeBorderColor,#7777);border-radius:9px;margin:8px 0;background:transparent;color:inherit;overflow:hidden;font-size:13px}
 #ttk-panel *{box-sizing:border-box}
@@ -34,7 +16,6 @@
 #ttk-panel .ttk-option-label{display:grid;gap:3px}
 #ttk-panel .ttk-option-label small{opacity:.64;font-size:11px}
 #ttk-panel .ttk-module-row:has(input:disabled){opacity:.53}
-#ttk-panel input[type=checkbox]{appearance:auto!important;accent-color:#86745e;min-width:17px;width:17px;height:17px}
 #ttk-panel .ttk-section{border:1px solid rgba(128,128,128,.3);border-radius:8px;overflow:hidden}
 #ttk-panel .ttk-section[hidden]{display:none}
 #ttk-panel .ttk-section-summary{display:flex;padding:12px;font-weight:650;background:rgba(128,128,128,.06)}
@@ -155,11 +136,6 @@ html[data-ttk-theme] #ttk-panel .ttk-mini-preview[data-theme=nocturne] .ttk-prev
 
 #ttk-panel .ttk-font-status{font-size:11px;line-height:1.5;opacity:.8}
 
-/* 0.2.4: limit icon treatments to the top action rail and composer; no global icon recoloring. */
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){filter:none!important;text-shadow:none!important;-webkit-filter:none!important;opacity:1}
-html[data-ttk-theme][data-ttk-icon-tone=neutral] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){color:var(--ttk-muted)!important}
-html[data-ttk-theme][data-ttk-icon-tone=accent] :is(#top-bar,#top-settings-holder,#send_form) :is(.menu_button,.drawer-icon,.fa-solid,.fa-regular,.fa){color:var(--ttk-accent)!important}
-/* Icon appearance is handled by independent top/bottom bar rules below. */
 /* Keep editing controls sharp, even when third-party icon themes add blur, low opacity or shadows. */
 html[data-ttk-theme] #chat :is(.mes_edit_buttons,.mes_edit_buttons *, .mes_button,.mes_button *, .mes_edit,.mes_edit *){filter:none!important;backdrop-filter:none!important;-webkit-filter:none!important;opacity:1!important;text-shadow:none!important;box-shadow:none!important;transform:none!important}
 html[data-ttk-theme] #chat :is(.mes_edit_buttons,.mes_button,.mes_edit){color:var(--ttk-muted)!important}
@@ -366,64 +342,64 @@ html[data-ttk-theme] :is(.standoutHeader,.inline-drawer-header,.settingsBlockHea
 /* Paper is now very light, including its reading canvas. */
 html[data-ttk-theme=paper] #chat .mes[is_user=true] {box-shadow:none!important}
 
-/* v0.2.9: Replace the visible glyph only, never the interactive parent/button. */
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-sliders::before {
+/* Linear SVG glyphs for the top rail toggles and composer buttons only (never icons inside the settings windows). */
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-sliders::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M4%2012h16M4%2018h16%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%226%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2212%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2218%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%206h16M4%2012h16M4%2018h16%22%2F%3E%3Ccircle%20cx%3D%229%22%20cy%3D%226%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2216%22%20cy%3D%2212%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2218%22%20r%3D%222%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-plug::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-plug::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%203v5M16%203v5M6%208h12v3a6%206%200%200%201-6%206v4M9%2021h6%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M8%203v5M16%203v5M6%208h12v3a6%206%200%200%201-6%206v4M9%2021h6%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-font::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-font::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m4%2020%208-16%208%2016M7%2014h10M2%2020h5M17%2020h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m4%2020%208-16%208%2016M7%2014h10M2%2020h5M17%2020h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-book::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-book::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a3%203%200%200%201%203-3h13v17H7a3%203%200%200%200%200%203h13M4%205v14a3%203%200%200%201%203-3%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M4%205a3%203%200%200%201%203-3h13v17H7a3%203%200%200%200%200%203h13M4%205v14a3%203%200%200%201%203-3%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-user-gear::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-user-gear::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%229%22%20cy%3D%227%22%20r%3D%223%22%2F%3E%3Cpath%20d%3D%22M3%2019v-2a6%206%200%200%201%209-5M17%2013v2m0%204v2m-4-4h2m4%200h2%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%229%22%20cy%3D%227%22%20r%3D%223%22%2F%3E%3Cpath%20d%3D%22M3%2019v-2a6%206%200%200%201%209-5M17%2013v2m0%204v2m-4-4h2m4%200h2%22%2F%3E%3Ccircle%20cx%3D%2217%22%20cy%3D%2217%22%20r%3D%222%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-image::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-image::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%229%22%20r%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m4%2017%205-5%204%204%203-3%205%205%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%224%22%20width%3D%2218%22%20height%3D%2216%22%20rx%3D%222%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%229%22%20r%3D%221.5%22%2F%3E%3Cpath%20d%3D%22m4%2017%205-5%204%204%203-3%205%205%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-cubes::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-cubes::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m8%203%204%202.2L8%208%204%205.2%208%203ZM4%205.2V10l4%202.5%204-2.5V5.2M8%208v4.5M16%2011l4%202.2-4%202.8-4-2.8%204-2.2Zm-4%202.2V18l4%202.5%204-2.5v-4.8M16%2016v4.5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22m8%203%204%202.2L8%208%204%205.2%208%203ZM4%205.2V10l4%202.5%204-2.5V5.2M8%208v4.5M16%2011l4%202.2-4%202.8-4-2.8%204-2.2Zm-4%202.2V18l4%202.5%204-2.5v-4.8M16%2016v4.5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-face-smile::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-face-smile::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M8%2014q4%205%208%200%22%2F%3E%3Cpath%20d%3D%22M9%209h.01M15%209h.01%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%229%22%2F%3E%3Cpath%20d%3D%22M8%2014q4%205%208%200%22%2F%3E%3Cpath%20d%3D%22M9%209h.01M15%209h.01%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
   vertical-align:-.12em!important;opacity:1!important;
 }
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings) :is(.fa,.fas,.fa-solid).fa-address-card::before {
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.fa-address-card::before {
   content:""!important;display:inline-block!important;width:1.18em!important;height:1.18em!important;
   background-color:currentColor!important;
   -webkit-mask:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%221.8%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%222%22%20y%3D%225%22%20width%3D%2220%22%20height%3D%2214%22%20rx%3D%222%22%2F%3E%3Ccircle%20cx%3D%228%22%20cy%3D%2210%22%20r%3D%222%22%2F%3E%3Cpath%20d%3D%22M5%2016q3-4%206%200M14%2010h5M14%2014h5%22%2F%3E%3C%2Fsvg%3E") center / contain no-repeat!important;
@@ -463,47 +439,6 @@ html[data-ttk-theme] #send_form :is(.fa,.fas,.fa-solid).fa-paper-plane::before {
 #ttk-panel .ttk-translation-edit{padding:8px 0;border-bottom:1px solid var(--ttk-border,rgba(128,128,128,.2))}
 #ttk-panel .ttk-translation-edit>small{overflow-wrap:anywhere;opacity:.85}
 #ttk-panel .ttk-translation-edit .ttk-actions{display:flex;gap:6px;flex-wrap:wrap}
-
-/* Prompt labels are native inline text, with no injected spans or layout overrides. */
-/* v0.3.3: keep top navigation glyphs visible on light/dark theme surfaces.
- * Earlier CSS masks were tinted with currentColor; native icon styles can supply
- * white/transparent colors on pale surfaces. Use explicit theme ink and keep
- * the mask tint separate from interactive button backgrounds. */
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer-icon,.menu_button,.fa,.fas,.far,.fa-solid,.fa-regular,[class*="fa-"]) {
-  color:var(--ttk-text)!important;
-  -webkit-text-fill-color:var(--ttk-text)!important;
-  opacity:1!important;
-  visibility:visible!important;
-  filter:none!important;
-  text-shadow:none!important;
-}
-html[data-ttk-theme][data-ttk-icon-tone=accent]
-  :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer-icon,.menu_button,.fa,.fas,.far,.fa-solid,.fa-regular,[class*="fa-"]) {
-  color:var(--ttk-accent)!important;
-  -webkit-text-fill-color:var(--ttk-accent)!important;
-}
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.fa,.fas,.fa-solid)[class*="fa-"]::before {
-  color:inherit!important;
-  -webkit-text-fill-color:currentColor!important;
-  opacity:1!important;
-  filter:none!important;
-}
-/* Keep custom SVG mask icons distinguishable regardless of their inherited
- * FontAwesome color, while leaving icon paths and click handlers untouched. */
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.fa-sliders,.fa-plug,.fa-font,.fa-book,.fa-user-gear,.fa-image,
-      .fa-cubes,.fa-face-smile,.fa-address-card)::before {
-  background-color:var(--ttk-text)!important;
-}
-html[data-ttk-theme][data-ttk-icon-tone=accent]
-  :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.fa-sliders,.fa-plug,.fa-font,.fa-book,.fa-user-gear,.fa-image,
-      .fa-cubes,.fa-face-smile,.fa-address-card)::before {
-  background-color:var(--ttk-accent)!important;
-}
 
 /* v0.3.5: high-contrast native prompt names and readable native typography.
    Never paint a replacement label above the original text or mutate its layout. */
@@ -558,87 +493,41 @@ html[data-ttk-theme] :is(#left-nav-panel,#right-nav-panel,#extensions_settings,#
 }
 
 
-/* v0.3.6 — checkbox rendering repair.
-   Preserve native input semantics, checked/unchecked state, and existing
-   toggles/switches. Apply only to real checkbox controls, not switch widgets. */
+/* Checkboxes (rewritten in 0.3.14).
+   Drawn entirely by this rule — no pseudo-elements, no native white box on dark palettes.
+   display/position are deliberately NOT set: SillyTavern keeps several checkboxes hidden on
+   purpose (message delete mode, panel pins, power toggles) and they must stay hidden. */
 html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox),
 #ttk-panel input[type="checkbox"] {
-  -webkit-appearance: checkbox !important;
-  appearance: checkbox !important;
-  display: inline-block !important;
-  position: static !important;
-  box-sizing: border-box !important;
-  width: 16px !important;
-  min-width: 16px !important;
-  max-width: 16px !important;
-  height: 16px !important;
-  min-height: 16px !important;
-  max-height: 16px !important;
-  margin: 0 5px 0 0 !important;
-  padding: 0 !important;
-  border-radius: 3px !important;
-  background-image: none !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  filter: none !important;
-  -webkit-filter: none !important;
-  opacity: 1 !important;
-  transform: none !important;
-  vertical-align: middle !important;
-  accent-color: var(--ttk-accent, #587997) !important;
+  -webkit-appearance:none!important;appearance:none!important;box-sizing:border-box!important;
+  width:17px!important;min-width:17px!important;max-width:17px!important;
+  height:17px!important;min-height:17px!important;max-height:17px!important;
+  margin:0 6px 0 0;padding:0!important;vertical-align:middle!important;flex:0 0 auto;
+  border:1.5px solid color-mix(in srgb,var(--ttk-muted,#7b8794) 70%,var(--ttk-border,#c9d2dc))!important;border-radius:4px!important;
+  background:var(--ttk-surface,#fff) center/12px 12px no-repeat!important;
+  box-shadow:none!important;text-shadow:none!important;filter:none!important;opacity:1!important;transform:none!important;
+  cursor:pointer;transition:background-color .12s ease,border-color .12s ease;
 }
 html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox)::before,
 html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox)::after,
 #ttk-panel input[type="checkbox"]::before,
-#ttk-panel input[type="checkbox"]::after {
-  content: none !important;
-  display: none !important;
+#ttk-panel input[type="checkbox"]::after {content:none!important;display:none!important}
+html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox):hover,
+#ttk-panel input[type="checkbox"]:hover {border-color:var(--ttk-accent,#587997)!important}
+html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox):checked,
+#ttk-panel input[type="checkbox"]:checked {
+  background-color:var(--ttk-accent,#587997)!important;border-color:var(--ttk-accent,#587997)!important;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 6.3l2.4 2.4 4.6-5'/%3E%3C/svg%3E")!important;
 }
+/* On dark palettes the accent is light, so the tick turns dark. */
+html[data-ttk-theme][data-ttk-scheme=dark] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox):checked,
+html[data-ttk-theme][data-ttk-scheme=dark] #ttk-panel input[type="checkbox"]:checked {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23141a22' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 6.3l2.4 2.4 4.6-5'/%3E%3C/svg%3E")!important;
+}
+html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox):disabled,
+#ttk-panel input[type="checkbox"]:disabled {opacity:.5!important;cursor:not-allowed}
 html[data-ttk-theme] input[type="checkbox"]:not([role="switch"]):not(.toggle-checkbox):not(.switch-checkbox):focus-visible,
-#ttk-panel input[type="checkbox"]:focus-visible {
-  outline: 2px solid var(--ttk-accent, #587997) !important;
-  outline-offset: 2px !important;
-}
-
-/* ==============================================================
-   0.3.7 / UI surface & readability audit (SillyTavern 1.19.x)
-   No native theme JSON or third-party extension data is modified.
-   Use theme tokens rather than hard-coded white, grey or blue.
-   ============================================================= */
-
-/* Top menu: the icon itself is a glyph/mask, not an opaque button tile.
-   Keep hover/focus indication without creating a permanent square backdrop. */
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer-icon,.top-menu-button) {
-  background-color:transparent!important;
-  background-image:none!important;
-  border-color:transparent!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  filter:none!important;
-  -webkit-filter:none!important;
-  text-shadow:none!important;
-}
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer-icon,.top-menu-button):is(:hover,:focus-visible) {
-  background:var(--ttk-raised)!important;
-  border-radius:5px!important;
-}
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer-icon,.fa,.fas,.far,.fa-solid,.fa-regular) {
-  color:var(--ttk-muted)!important;
-  -webkit-text-fill-color:currentColor!important;
-  opacity:1!important;
-}
-html[data-ttk-theme][data-ttk-icon-tone=accent]
-  :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer-icon,.fa,.fas,.far,.fa-solid,.fa-regular){color:var(--ttk-accent)!important;}
-/* Active items have a fine indicator line rather than a painted icon square. */
-html[data-ttk-theme] :is(#top-bar,#top-settings-holder,#top-settings)
-  :is(.drawer-icon,.top-menu-button).active {
-  background:transparent!important;
-  border-bottom:2px solid var(--ttk-accent)!important;
-}
+#ttk-panel input[type="checkbox"]:focus-visible {outline:2px solid var(--ttk-accent,#587997)!important;outline-offset:2px!important}
 
 /* A unified surface system for native settings, lorebook, backgrounds and drawers. */
 html[data-ttk-theme] :is(#WorldInfo,#world_info,#WorldInfoEditor,#world_popup,#backgrounds,
@@ -737,7 +626,6 @@ html[data-ttk-theme] :is(#user-settings-block,#left-nav-panel,#right-nav-panel,
 #ttk-panel .ttk-theme-card small {opacity:1!important;color:var(--ttk-muted,#606a76)!important;}
 #ttk-panel .ttk-module-row:has(input:disabled){opacity:1!important;}
 #ttk-panel .ttk-module-row:has(input:disabled) .ttk-option-label{color:var(--ttk-muted,#606a76)!important;}
-#ttk-panel input[type="checkbox"]:disabled{opacity:.8!important;}
 /* Prevent the generic disabled override from washing out functional controls. */
 html[data-ttk-theme] :is(input,textarea,select):disabled {
   background-color:var(--ttk-raised)!important;
@@ -745,20 +633,6 @@ html[data-ttk-theme] :is(input,textarea,select):disabled {
   opacity:1!important;
 }
 
-/* v0.3.11 — Top navigation icon controls only. Do NOT target .drawer or
-   .drawer-content here: these containers include the actual settings windows. */
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
-  :is(.drawer-icon, .openIcon, .top-menu-button, .drawer-toggle > .drawer-icon) {
-  background:transparent!important;
-  background-color:transparent!important;
-  background-image:none!important;
-  border:0!important;
-  box-shadow:none!important;
-  filter:none!important;
-  -webkit-filter:none!important;
-  text-shadow:none!important;
-  opacity:1!important;
-}
 /* Only the icon itself is transparent; a menu's containing panel stays opaque. */
 html[data-ttk-theme] :is(#left-nav-panel,#right-nav-panel,
  #extensions_settings,#extensions_settings2,#WorldInfo,#backgrounds,
@@ -784,112 +658,160 @@ html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
   color:var(--ttk-text)!important;
   opacity:1!important;
 }
-/* Focus indicator on the interactive icon, not an opaque tile. */
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
-  :is(.drawer-icon,.top-menu-button):focus-visible {
-  outline:2px solid var(--ttk-accent)!important;
-  outline-offset:2px!important;
-}
 
-/* v0.3.12: Equalize top-bar icon geometry in all four themes.
-   Porcelain previously styled every button globally, including drawer toggles.
-   Restrict the correction to the *toggle control*; never the drawer body or panel. */
-html[data-ttk-theme] #top-settings-holder .drawer-toggle,
-html[data-ttk-theme] #top-bar .drawer-toggle,
-html[data-ttk-theme] #top-settings .drawer-toggle {
-  box-sizing:border-box!important;
-  display:flex!important;
-  flex-flow:row nowrap!important;
-  align-items:center!important;
-  justify-content:center!important;
-  background:transparent!important;
-  background-image:none!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-  text-shadow:none!important;
-  filter:none!important;
-  opacity:1!important;
-}
-html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon,
-html[data-ttk-theme] #top-bar .drawer-toggle > .drawer-icon,
-html[data-ttk-theme] #top-settings .drawer-toggle > .drawer-icon {
-  box-sizing:border-box!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  vertical-align:middle!important;
-  line-height:1!important;
-  margin:0!important;
-  padding:0!important;
-  transform:none!important;
-  position:relative!important;
-  inset:auto!important;
-  background:transparent!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-}
-/* Neutralize Porcelain's global button-frame styling only on top-bar controls. */
-html[data-ttk-theme=porcelain] :is(#top-settings-holder,#top-bar,#top-settings)
-  :is(.drawer-toggle,.top-menu-button) {
-  background:transparent!important;
-  background-image:none!important;
-  border:0!important;
-  border-radius:0!important;
-  box-shadow:none!important;
-}
-/* Do not add pseudo-element labels or decorative borders around top icons. */
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
-  .drawer-toggle::before,
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings)
-  .drawer-toggle::after {
-  content:none!important;
-}
+/* ==========================================================================
+   v0.3.14 — theme bridge, consolidated icons, design audit
+   ========================================================================== */
 
-/* v0.3.13 — Porcelain top-rail geometry is the shared layout standard.
-   Only the interactive icon/toggle is targeted, never .drawer or panel surfaces.
-   Palette and icon colors continue to come from the selected theme. */
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings) .drawer-toggle {
-  box-sizing:border-box!important;
-  position:relative!important;
-  min-height:36px!important;
-  height:36px!important;
-  padding:0!important;
-  margin:0!important;
-  display:flex!important;
-  flex-direction:row!important;
-  justify-content:center!important;
-  align-items:center!important;
-  vertical-align:middle!important;
-  line-height:1!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
-  transform:none!important;
+/* 1. Theme bridge.
+   SillyTavern paints most of its UI from --SmartTheme* variables. Earlier builds left
+   them alone, so the saved native theme leaked through wherever no override existed
+   (near-invisible hint text, timestamps, glows on light palettes). These declarations
+   live only in this stylesheet: nothing is written to the saved theme, and they vanish
+   with the design module. !important is required to outrank the inline values that
+   SillyTavern sets on <html>. */
+html[data-ttk-theme] {
+  color-scheme:light;
+  --ttk-icon:var(--ttk-muted);
+  --SmartThemeBodyColor:var(--ttk-text)!important;
+  --SmartThemeEmColor:var(--ttk-muted)!important;
+  --SmartThemeUnderlineColor:var(--ttk-accent)!important;
+  --SmartThemeQuoteColor:var(--ttk-dialogue)!important;
+  --SmartThemeBlurTintColor:var(--ttk-surface)!important;
+  --SmartThemeChatTintColor:var(--ttk-bg)!important;
+  --SmartThemeUserMesBlurTintColor:var(--ttk-user)!important;
+  --SmartThemeBotMesBlurTintColor:var(--ttk-ai)!important;
+  --SmartThemeBorderColor:var(--ttk-border)!important;
+  --SmartThemeShadowColor:transparent!important;
+  --SmartThemeBlurStrength:0px!important;
+  --blurStrength:0!important;
+  --shadowWidth:0!important;
+  --interactable-outline-color:var(--ttk-accent);
+  --interactable-outline-color-faint:color-mix(in srgb,var(--ttk-accent) 28%,transparent);
+  /* Native "white/grey overlay" constants assume a dark canvas; express them as ink of the palette. */
+  --white20a:color-mix(in srgb,var(--ttk-text) 10%,transparent);
+  --white30a:color-mix(in srgb,var(--ttk-text) 16%,transparent);
+  --white50a:color-mix(in srgb,var(--ttk-text) 45%,transparent);
+  --white60a:color-mix(in srgb,var(--ttk-text) 60%,transparent);
+  --white70a:color-mix(in srgb,var(--ttk-text) 72%,transparent);
+  --grey30:var(--ttk-raised);
+  --grey50:var(--ttk-muted);
+  --grey70:var(--ttk-muted);
+  --grey75:var(--ttk-muted);
+  --grey5020a:color-mix(in srgb,var(--ttk-text) 9%,transparent);
+  --grey5050a:color-mix(in srgb,var(--ttk-text) 24%,transparent);
+  --grey7070a:color-mix(in srgb,var(--ttk-muted) 75%,transparent);
+  --grey30a:color-mix(in srgb,var(--ttk-text) 8%,transparent);
 }
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings) .drawer-toggle > .drawer-icon {
-  position:relative!important;
-  box-sizing:border-box!important;
-  display:inline-flex!important;
-  width:32px!important;
-  height:32px!important;
-  min-width:32px!important;
-  min-height:32px!important;
-  flex:0 0 32px!important;
-  align-items:center!important;
-  justify-content:center!important;
-  padding:0!important;
-  margin:0!important;
-  vertical-align:middle!important;
-  line-height:1!important;
-  transform:none!important;
-  top:auto!important;
-  left:auto!important;
-  background:transparent!important;
-  border:0!important;
-  box-shadow:none!important;
+html[data-ttk-theme][data-ttk-scheme=dark] {color-scheme:dark}
+html[data-ttk-theme][data-ttk-icon-tone=accent] {--ttk-icon:var(--ttk-accent)}
+/* "Black overlay" constants darken insets on dark themes; on a light palette they become soft ink washes. */
+html[data-ttk-theme][data-ttk-scheme=light] {
+  --black30a:color-mix(in srgb,var(--ttk-text) 4%,transparent);
+  --black50a:color-mix(in srgb,var(--ttk-text) 8%,transparent);
+  --black60a:color-mix(in srgb,var(--ttk-text) 10%,transparent);
+  --black70a:var(--ttk-raised);
+  --black90a:var(--ttk-surface);
 }
-html[data-ttk-theme] :is(#top-settings-holder,#top-bar,#top-settings) .drawer-toggle > .drawer-icon::before {
-  vertical-align:middle!important;
+html[data-ttk-theme] select option {background-color:var(--ttk-surface)!important;color:var(--ttk-text)!important}
+html[data-ttk-theme] ::selection {background:color-mix(in srgb,var(--ttk-accent) 26%,transparent);color:inherit}
+
+/* 2. Top rail + composer icons — one block replacing the 0.2.4–0.3.13 patches.
+   Scope is the toggle button itself (.drawer-toggle > .drawer-icon): icons inside the
+   settings windows are never recoloured or swapped. */
+html[data-ttk-theme] #top-settings-holder .drawer-toggle {
+  box-sizing:border-box!important;position:relative!important;display:flex!important;
+  align-items:center!important;justify-content:center!important;
+  height:36px!important;min-height:36px!important;padding:0!important;margin:0!important;line-height:1!important;
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;transform:none!important;
+}
+html[data-ttk-theme] #top-settings-holder .drawer-toggle::before,
+html[data-ttk-theme] #top-settings-holder .drawer-toggle::after {content:none!important}
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon {
+  box-sizing:border-box!important;position:relative!important;inset:auto!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  width:32px!important;height:32px!important;min-width:32px!important;flex:0 0 32px!important;
+  padding:0!important;margin:0!important;line-height:1!important;transform:none!important;
+  font-size:calc(var(--mainFontSize,15px) * 1.35)!important;
+  color:var(--ttk-icon)!important;-webkit-text-fill-color:currentColor!important;
+  background:transparent!important;border:1px solid transparent!important;border-radius:8px!important;
+  box-shadow:none!important;text-shadow:none!important;filter:none!important;opacity:1!important;
+  transition:background-color .12s ease,color .12s ease,border-color .12s ease;
+}
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon::before {vertical-align:middle!important}
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon:hover {color:var(--ttk-text)!important;background:var(--ttk-raised)!important}
+/* The open drawer is marked on the icon itself (SillyTavern toggles .openIcon/.closedIcon). */
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon.openIcon {color:var(--ttk-accent)!important;box-shadow:inset 0 -2px 0 var(--ttk-accent)!important;border-radius:8px 8px 0 0!important}
+html[data-ttk-theme] #top-settings-holder .drawer-toggle:focus-visible > .drawer-icon,
+html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon:focus-visible {outline:2px solid var(--ttk-accent)!important;outline-offset:1px!important}
+/* Composer buttons share the same ink. */
+html[data-ttk-theme] #send_form :is(#leftSendForm,#rightSendForm) > div {
+  color:var(--ttk-icon)!important;-webkit-text-fill-color:currentColor!important;
+  filter:none!important;text-shadow:none!important;opacity:1!important;border-radius:8px;
+  transition:background-color .12s ease,color .12s ease;
+}
+html[data-ttk-theme] #send_form :is(#leftSendForm,#rightSendForm) > div:hover {color:var(--ttk-text)!important}
+html[data-ttk-theme] #send_form #send_but {color:var(--ttk-accent)!important}
+html[data-ttk-theme] #send_form #mes_stop {color:var(--ttk-accent)!important}
+
+/* Icon style: 윤곽형(outline) is the base above. */
+/* 부드러운 버튼형 — each icon sits on a soft tile. */
+html[data-ttk-theme][data-ttk-icon-style=soft] #top-settings-holder .drawer-toggle > .drawer-icon {background:var(--ttk-raised)!important;border-color:var(--ttk-border)!important;border-radius:10px!important}
+html[data-ttk-theme][data-ttk-icon-style=soft] #top-settings-holder .drawer-toggle > .drawer-icon:hover {border-color:var(--ttk-accent)!important}
+html[data-ttk-theme][data-ttk-icon-style=soft] #top-settings-holder .drawer-toggle > .drawer-icon.openIcon {background:color-mix(in srgb,var(--ttk-accent) 14%,var(--ttk-surface))!important;border-color:var(--ttk-accent)!important;box-shadow:none!important;border-radius:10px!important}
+html[data-ttk-theme][data-ttk-icon-style=soft] #send_form :is(#leftSendForm,#rightSendForm) > div {background:var(--ttk-raised)!important}
+/* 미니멀형 — smaller, quieter glyphs; no tiles, no underline. */
+html[data-ttk-theme][data-ttk-icon-style=minimal] #top-settings-holder .drawer-toggle > .drawer-icon {font-size:calc(var(--mainFontSize,15px) * 1.12)!important;color:color-mix(in srgb,var(--ttk-icon) 72%,transparent)!important}
+html[data-ttk-theme][data-ttk-icon-style=minimal] #top-settings-holder .drawer-toggle > .drawer-icon:hover {background:transparent!important;color:var(--ttk-text)!important}
+html[data-ttk-theme][data-ttk-icon-style=minimal] #top-settings-holder .drawer-toggle > .drawer-icon.openIcon {box-shadow:none!important;color:var(--ttk-text)!important}
+html[data-ttk-theme][data-ttk-icon-style=minimal] #send_form :is(#leftSendForm,#rightSendForm) > div {color:color-mix(in srgb,var(--ttk-icon) 72%,transparent)!important}
+
+/* 3. Chat details the palette did not reach. */
+html[data-ttk-theme] #chat .mes .timestamp,
+html[data-ttk-theme] #chat .mes :is(.mesIDDisplay,.mes_timer,.tokenCounterDisplay) {color:var(--ttk-muted)!important;opacity:1!important;text-shadow:none!important}
+html[data-ttk-theme] #chat .mes_text :is(em,i) {color:var(--ttk-muted)}
+html[data-ttk-theme] #chat .mes_text u {color:var(--ttk-accent)}
+html[data-ttk-theme] #chat .mes_text :is(strong,b) {color:inherit}
+html[data-ttk-theme] #chat .mes_text hr {border:0;border-top:1px solid var(--ttk-border);opacity:1}
+/* Inline code is a quiet chip in palette colours. */
+html[data-ttk-theme] code:not(.hljs) {
+  background:var(--ttk-raised)!important;color:var(--ttk-text)!important;border:1px solid var(--ttk-border)!important;
+  border-radius:4px;line-height:inherit;font-size:.92em;
+}
+/* A code block is one box: the <pre> no longer wears the blockquote frame around the <code>. */
+html[data-ttk-theme] #chat .mes_text pre {background:transparent!important;border:0!important;border-left:0!important;padding:0!important;margin:0 0 var(--ttk-para)}
+html[data-ttk-theme] #chat :is(.mes_text,.mes_reasoning) pre code {display:block;padding:12px 14px!important;border-radius:8px!important;border:1px solid var(--ttk-border)!important;line-height:1.55!important;font-size:.88em}
+html[data-ttk-theme] #chat .mes_text blockquote {margin-inline:0}
+html[data-ttk-theme] #chat .mes_text table {border-collapse:collapse}
+html[data-ttk-theme] #chat .mes_text :is(th,td) {border:1px solid var(--ttk-border)!important;padding:5px 9px}
+html[data-ttk-theme] #chat .mes_text th {background:var(--ttk-raised)}
+html[data-ttk-theme] #chat .mes_reasoning {border-radius:0 0 6px 6px}
+html[data-ttk-theme] #chat .mes_reasoning :is(p,li,em,i) {color:var(--ttk-muted)!important}
+/* Sliders: a thin palette track with an accent ring, instead of the native black bar. */
+html[data-ttk-theme] input[type=range] {background:color-mix(in srgb,var(--ttk-muted) 34%,var(--ttk-surface))!important;box-shadow:none!important;height:4px}
+html[data-ttk-theme] input[type=range]:hover {filter:none!important}
+html[data-ttk-theme] input[type=range]::-webkit-slider-thumb {background:var(--ttk-surface)!important;border:2px solid var(--ttk-accent)!important;box-shadow:0 1px 3px var(--ttk-shadow)}
+html[data-ttk-theme] input[type=range]::-moz-range-thumb {background:var(--ttk-surface)!important;border:2px solid var(--ttk-accent)!important;box-shadow:0 1px 3px var(--ttk-shadow)}
+/* Scrollbars follow the palette. */
+html[data-ttk-theme] * {scrollbar-color:color-mix(in srgb,var(--ttk-muted) 55%,transparent) transparent}
+
+/* 4. Toolkit panel. */
+#ttk-panel,#ttk-panel * {text-shadow:none}
+@media (max-width:1000px) {
+  /* SillyTavern switches to its mobile layout at 1000px; follow the same breakpoint. */
+  html[data-ttk-theme] #chat .mes {max-width:100%!important;margin:8px 0!important;padding:11px 12px!important}
+  html[data-ttk-theme=porcelain] #chat .mes {padding:15px 12px 13px!important}
+  /* The rim ornament must not run into the message buttons on a narrow screen. */
+  html[data-ttk-theme=porcelain] #chat .mes::before {top:4px;right:5px;width:20px;height:9px}
+  html[data-ttk-theme=porcelain] #chat .mes[is_user=true]::before {left:5px}
+  html[data-ttk-theme] #top-settings-holder .drawer-toggle {height:40px!important;min-height:40px!important}
+  html[data-ttk-theme] #top-settings-holder .drawer-toggle > .drawer-icon {width:36px!important;height:36px!important;min-width:36px!important;flex-basis:36px!important}
+  /* 16px inputs stop iOS Safari from zooming the page on focus. */
+  #ttk-panel :is(input[type=text],select,textarea) {font-size:16px!important}
+  #ttk-panel .ttk-button {min-height:40px;padding:9px 12px}
+  #ttk-panel input[type=color] {width:48px;height:36px}
+  #ttk-panel input[type=range] {height:28px}
+  #ttk-panel .ttk-module-row {min-height:44px}
+  #ttk-panel .ttk-theme-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+  #ttk-panel .ttk-color-grid {grid-template-columns:1fr}
 }
