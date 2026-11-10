@@ -13,8 +13,7 @@
 export const INPUT_LANGUAGES = Object.freeze({
     en: { label: 'English', prompt: 'English' },
     ja: { label: '日本語', prompt: 'Japanese (日本語)' },
-    zhs: { label: '简体中文', prompt: 'Simplified Chinese (简体中文)' },
-    zht: { label: '繁體中文', prompt: 'Traditional Chinese (繁體中文)' },
+    zh: { label: '中文', prompt: 'Chinese (Simplified, 简体中文)' },
 });
 export const DEFAULT_TRANSLATION = Object.freeze({
     profileId: '', display: 'replace', autoOutput: true, inputMode: 'auto', inputLang: 'en', minTokens: 0,
@@ -27,7 +26,8 @@ export function normalizeTranslation(raw = {}) {
         display: r.display === 'below' ? 'below' : 'replace',
         autoOutput: r.autoOutput !== false,
         inputMode: ['off', 'button', 'auto'].includes(r.inputMode) ? r.inputMode : DEFAULT_TRANSLATION.inputMode,
-        inputLang: Object.hasOwn(INPUT_LANGUAGES, r.inputLang) ? r.inputLang : DEFAULT_TRANSLATION.inputLang,
+        // 'zhs'/'zht' were one choice too many: models read either script, so a single Chinese option remains.
+        inputLang: ['zhs', 'zht'].includes(r.inputLang) ? 'zh' : Object.hasOwn(INPUT_LANGUAGES, r.inputLang) ? r.inputLang : DEFAULT_TRANSLATION.inputLang,
         minTokens: Number.isFinite(minTokens) ? Math.min(16000, Math.max(0, Math.round(minTokens))) : 0,
     };
 }
@@ -62,9 +62,33 @@ function extractText(response) {
         ?? response?.candidates?.[0]?.content?.parts?.map(p => p?.text || '').join('') ?? response?.text ?? '';
 }
 
-const RULES = 'Keep the meaning, tone, speech level and each character\'s voice. Preserve exactly: line and paragraph breaks, Markdown markers (*, **, _, `, >, lists), the quotation marks and brackets used, HTML tags and attributes, code blocks, URLs and {{macros}}. Do not translate inside code blocks or HTML attribute values. Output ONLY the translated text: no notes, no preamble, no quotes around the whole text.';
-const OUTPUT_PROMPT = `You are the translation engine of a role-play chat. Translate the text supplied by the user into natural, fluent Korean (한국어) as it would read in a published Korean novel. ${RULES}`;
-const inputPrompt = lang => `You are the translation engine of a role-play chat. The user wrote their role-play message in Korean. Translate it into natural ${lang} that fits the story. Do not continue the story or reply to it. ${RULES}`;
+const RULES = 'Preserve exactly: line and paragraph breaks, Markdown markers (*, **, _, `, >, lists), the kind of quotation marks and brackets used, HTML tags and attributes, code blocks, URLs and {{macros}}. Do not translate inside code blocks or HTML attribute values. Translate everything else completely and faithfully: do not summarize, soften, censor, embellish or add anything. Output ONLY the translated text: no notes, no preamble, no quotes around the whole text.';
+
+/** How the Korean should read. Written in Korean so the examples are unambiguous to the model. */
+export const KOREAN_STYLE = `한국어 문체 지침 — 한국 작가가 처음부터 한국어로 쓴 소설처럼 읽혀야 한다.
+1. 번역투를 쓰지 않는다.
+   - 대명사 '그/그녀/그들/당신/그것'을 원문대로 옮기지 않는다. 이름·호칭·직함으로 바꾸거나, 문맥으로 알 수 있으면 생략한다. 상대를 부를 때 '당신'은 부부·격식·대립처럼 실제로 그렇게 부를 관계에서만 쓴다.
+   - 주어와 목적어는 한국어에서 자연스러운 만큼 생략한다.
+   - 피동·사동을 겹치지 않는다('~되어지다', '~에 의해 ~되다', '~하게 만들다' 남용 금지). 무생물 주어 문장은 사람을 주어로 풀어 쓴다.
+   - '~의'를 잇달아 쓰지 않고, '~하는 것이다', '~에 대해', '~에 있어서', '~를 가지다', '~중 하나', 불필요한 복수 '-들'을 피한다.
+   - 영어·일본어·중국어 어순을 따라가지 말고 한국어 어순으로 다시 짠다. 긴 문장은 호흡에 맞게 나누고, 뚝뚝 끊기는 문장은 자연스럽게 잇는다.
+2. 지문은 소설 문어체 평서문('-다')으로 쓰고, 원문의 서술 시제와 시점(1·2·3인칭)을 그대로 따른다.
+3. 대사는 실제로 소리 내어 말할 법한 구어로 쓴다.
+   - 인물의 나이·성격·관계에 맞는 말투와 높임(반말·존댓말·하오체 등)을 정하고 같은 글 안에서 일관되게 유지한다.
+   - 호칭은 한국어 관습에 맞춘다(이름, 선배, 오빠·형·언니·누나, 직함 등 관계가 드러날 때만. 불확실하면 이름을 쓴다).
+   - 감탄사·말버릇·욕설은 한국어에서 같은 세기와 느낌을 내는 말로 옮긴다.
+4. 의성어·의태어, 신음·숨소리·웃음 같은 소리는 한국어 표기로 옮기되, 대사 안에 있던 소리는 대사 안에 그대로 둔다. 지문으로 풀어 설명하지 않는다.
+5. 관용구·속담·농담은 글자 그대로 옮기지 말고 같은 뜻과 효과를 내는 한국어 표현으로 바꾼다.
+6. 인명·지명은 통용되는 한글 표기로 옮기고 같은 글 안에서 표기를 통일한다. 원문이 일부러 외국어로 남긴 말은 그대로 둔다.
+7. 문장부호는 한국어 관습을 따른다. 쉼표를 원문만큼 찍지 말고 꼭 필요한 곳에만 쓴다.
+8. 인물의 감정 세기와 말의 온도를 바꾸지 않는다. 거친 말은 거칠게, 담담한 말은 담담하게 옮긴다.`;
+const OUTPUT_PROMPT = `You are a professional literary translator working on a role-play chat. Translate the text supplied by the user into Korean (한국어). Keep the meaning, tone and each character's voice.\n\n${KOREAN_STYLE}\n\n${RULES}`;
+const inputPrompt = lang => `You are a professional literary translator working on a role-play chat. The user wrote their role-play message in Korean. Translate it into ${lang}, in fluent, idiomatic prose that reads as if originally written in that language: natural word order and idioms of the target language, no word-for-word rendering of Korean sentence structure, honorifics and speech levels conveyed through tone and word choice. Keep the meaning, tone, narrative person and tense. Do not continue the story or reply to it. ${RULES}`;
+/** Names help the translator keep speech levels and forms of address consistent. */
+const speakers = (ctx, message) => {
+    const who = [message?.name && `Speaker of this text: ${message.name}.`, ctx?.name1 && `The user's character: ${ctx.name1}.`].filter(Boolean).join(' ');
+    return who ? `\n\nContext (do not translate or output): ${who}` : '';
+};
 
 /** Other translators that rewrite chat messages. Running two at once double-translates every message. */
 const CONFLICT_PATTERN = /interpres|translat|번역|翻[译訳譯]|deepl|babel/i;
@@ -327,7 +351,7 @@ export class MessageTranslator {
         if (!manual && hangulRatio(source) > 0.5) return;
         this.onStatus(`#${id} 번역 중…`);
         const controller = new AbortController(); this.controller = controller;
-        const korean = await this.request(OUTPUT_PROMPT, source, controller.signal);
+        const korean = await this.request(OUTPUT_PROMPT + speakers(ctx, message), source, controller.signal);
         const now = this.ctx();
         // The chat may have changed, or the message may have been edited or swiped while waiting.
         if (!this.enabled || now?.getCurrentChatId?.() !== chatId || now.chat[id] !== message || message.mes !== source) return;
