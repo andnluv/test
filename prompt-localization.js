@@ -187,7 +187,7 @@ export class PromptNameTranslator{
     this.onStatus(`번역 진행 · 성공 ${translated} / 요청 ${attempted} / 표시 ${all.length}`);
     try{
      const messages=[
-      {role:'system',content:'Translate the supplied JSON array of UI label strings to natural Korean. Output ONLY one JSON array with exactly the same number of strings and the same order. Preserve emojis, placeholders, symbols, IDs, and special tokens. Do not add explanations.'},
+      {role:'system',content:'Translate the supplied JSON array of UI label strings into Korean as a Korean app would label them: short noun phrases (명사형, e.g. "문체 지침", "캐릭터 설정"), no sentence endings, no literal word-for-word renderings, common loanwords in their usual Hangul form. Output ONLY one JSON array with exactly the same number of strings and the same order. Preserve emojis, placeholders, symbols, IDs, and special tokens. Do not add explanations.'},
       {role:'user',content:JSON.stringify(batch)}
      ];
      // Reasoning models spend output tokens on thinking first; keep generous headroom so the answer is not empty.
