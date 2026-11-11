@@ -10,6 +10,8 @@
  * never display a stale translation.
  */
 
+import { addComposerButton, removeComposerButton } from './composer.js';
+
 export const INPUT_LANGUAGES = Object.freeze({
     en: { label: 'English', prompt: 'English' },
     ja: { label: '日本語', prompt: 'Japanese (日本語)' },
@@ -178,7 +180,7 @@ export class MessageTranslator {
         document.querySelector('#chat')?.removeEventListener('click', this.onChatClick);
         document.querySelectorAll('#chat .ttk-tr, #chat .ttk-tr-button').forEach(n => n.remove());
         document.querySelectorAll('#chat .mes').forEach(m => m.classList.remove('ttk-tr-on', 'ttk-tr-replace', 'ttk-tr-below', 'ttk-tr-original', 'ttk-tr-folded', 'ttk-tr-busy'));
-        document.getElementById('ttk_input_translate')?.remove();
+        removeComposerButton('ttk_input_translate');
         this.conflicts = []; this.onConflict([]);
     }
     reset() { this.queue = []; this.controller?.abort(); this.controller = null; this.busy = false; this.pending = null; }
@@ -256,18 +258,8 @@ export class MessageTranslator {
     }
     mountInputButton() {
         const existing = document.getElementById('ttk_input_translate');
-        if (!this.enabled || this.getSettings().inputMode === 'off') { existing?.remove(); return; }
-        if (existing) { existing.title = this.inputTitle(); return; }
-        const host = document.getElementById('leftSendForm');
-        if (!host) return;
-        const b = document.createElement('div');
-        b.id = 'ttk_input_translate';
-        b.className = 'fa-solid fa-language interactable';
-        b.tabIndex = 0;
-        b.title = this.inputTitle();
-        b.addEventListener('click', () => this.translateTextarea());
-        b.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this.translateTextarea(); } });
-        host.append(b);
+        if (!this.enabled || this.getSettings().inputMode === 'off') { if (existing) removeComposerButton('ttk_input_translate'); return; }
+        addComposerButton({ id: 'ttk_input_translate', icon: 'fa-language', label: '입력 번역', title: this.inputTitle(), order: 3, onClick: () => this.translateTextarea() });
     }
     inputTitle() {
         const s = this.getSettings(), lang = INPUT_LANGUAGES[s.inputLang].label;

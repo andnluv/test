@@ -927,8 +927,6 @@ html[data-ttk-theme=studio] #chat .mes.ttk-tr-replace .ttk-tr-bar {border-top:0;
 html[data-ttk-theme=studio] #chat .ttk-tr-actions button {border-radius:999px;background:var(--ttk-raised)}
 
 /* Composer button. */
-#ttk_input_translate {cursor:pointer;font-size:var(--bottomFormIconSize,1.4em);display:flex;align-items:center;justify-content:center;opacity:.8}
-#ttk_input_translate:hover {opacity:1}
 
 /* Settings panel parts. */
 #ttk-panel .ttk-choice {border:0;margin:0;padding:0;display:grid;gap:6px}
@@ -943,3 +941,34 @@ html[data-ttk-theme=studio] #chat .ttk-tr-actions button {border-radius:999px;ba
 #ttk-panel .ttk-conflict ul {padding-left:18px}
 #ttk-panel .ttk-conflict .ttk-button {justify-self:start;margin-top:4px}
 #ttk-panel .ttk-tr-status:empty {display:none}
+
+/* v0.5.0 — ghostwriter */
+#ttk_ghostwrite_undo[hidden] {display:none!important}
+#ttk_ghostwrite.ttk-tr-spin {animation:ttk-tr-pulse 1.1s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce) {#ttk_ghostwrite.ttk-tr-spin {animation:none;opacity:.5}}
+#ttk-panel .ttk-field textarea {width:100%;min-width:0;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid var(--ttk-border,rgba(128,128,128,.35));background:var(--ttk-surface,transparent);color:inherit;font:inherit;resize:vertical}
+
+/* Composer tools (shared by input translation and the ghostwriter). */
+/* Inside #leftSendForm SillyTavern sizes every child as one button; the wrapper must stay layout-less. */
+#ttk_composer_tools,#leftSendForm > #ttk_composer_tools {display:contents}
+#ttk_composer_tools > div {
+  order:1;width:var(--bottomFormBlockSize);height:var(--bottomFormBlockSize);flex:0 0 auto;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:var(--bottomFormIconSize,1.4em);opacity:.75;border-radius:8px;
+  color:var(--ttk-icon,inherit);transition:opacity .12s ease,color .12s ease;
+}
+#ttk_composer_tools > div:hover {opacity:1;color:var(--ttk-text,inherit)}
+#ttk_composer_tools > div:focus-visible {outline:2px solid var(--ttk-accent,currentColor);outline-offset:-2px}
+#ttk_composer_tools > #ttk_ghostwrite_undo {font-size:calc(var(--bottomFormIconSize,1.4em) * .8)}
+#ttk_composer_tools > div[hidden] {display:none!important}
+html[data-ttk-theme][data-ttk-icon-style=soft] #ttk_composer_tools > div {background:var(--ttk-raised)}
+@media (max-width:1000px) {
+  /* One labelled strip above the input box. */
+  #ttk_composer_tools {display:flex;order:0;width:100%;gap:6px;padding:5px 8px 3px;box-sizing:border-box;overflow-x:auto;scrollbar-width:none}
+  #ttk_composer_tools > div {
+    width:auto;height:32px;padding:0 11px;gap:6px;font-size:14px;opacity:1;border-radius:999px;
+    border:1px solid var(--ttk-border,var(--SmartThemeBorderColor));background:var(--ttk-raised,transparent);
+  }
+  #ttk_composer_tools > div::after {content:attr(data-label);font:500 13px/1 var(--mainFontFamily,sans-serif);white-space:nowrap}
+  #ttk_composer_tools > #ttk_ghostwrite_undo {font-size:14px}
+}
