@@ -90,8 +90,8 @@ html[data-ttk-theme] #send_textarea{background:var(--ttk-surface)!important;colo
 html[data-ttk-theme] #send_textarea::placeholder{color:var(--ttk-muted)!important;opacity:.85}
 html[data-ttk-theme] #send_but{color:var(--ttk-muted)!important}
 /* Toolkit-owned widgets (QR drawer, translation bar) style their own buttons and are excluded from the global button skin. */
-html[data-ttk-theme] :is(.menu_button,input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]),textarea,select,button:where(:not(#ttk-qr-drawer *,.ttk-tr *))){border-color:var(--ttk-border)!important}
-html[data-ttk-theme] :is(.menu_button,button:where(:not(#ttk-qr-drawer *,.ttk-tr *)),.right_menu_button,.small_button,.paginationjs-page){background-color:var(--ttk-raised)!important;color:var(--ttk-text)!important;border-radius:8px}
+html[data-ttk-theme] :is(.menu_button,input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]),textarea,select,button:where(:not(#ttk-qr-drawer *,.ttk-tr *,#ttk-inventory *))){border-color:var(--ttk-border)!important}
+html[data-ttk-theme] :is(.menu_button,button:where(:not(#ttk-qr-drawer *,.ttk-tr *,#ttk-inventory *)),.right_menu_button,.small_button,.paginationjs-page){background-color:var(--ttk-raised)!important;color:var(--ttk-text)!important;border-radius:8px}
 html[data-ttk-theme] :is(input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=color]):not([type=file]),textarea,select){background-color:var(--ttk-surface)!important;color:var(--ttk-text)!important}
 html[data-ttk-theme] :is(input[type=checkbox],input[type=radio],input[type=range]){accent-color:var(--ttk-accent)}
 html[data-ttk-theme] :is(.menu_button,button,input,textarea,select):focus-visible{outline:2px solid var(--ttk-accent)!important;outline-offset:2px}
@@ -191,11 +191,11 @@ html[data-ttk-theme=porcelain] :is(#send_form,#send_form_holder,#send_textarea_w
 }
 html[data-ttk-theme=porcelain] #send_form{border-top:2px double var(--ttk-border)!important}
 html[data-ttk-theme=porcelain] #send_textarea{background:#fff!important}
-html[data-ttk-theme=porcelain] :is(.menu_button,button:where(:not(#ttk-qr-drawer *,.ttk-tr *)),.right_menu_button,.small_button){
+html[data-ttk-theme=porcelain] :is(.menu_button,button:where(:not(#ttk-qr-drawer *,.ttk-tr *,#ttk-inventory *)),.right_menu_button,.small_button){
   box-shadow:inset 0 0 0 1px var(--ttk-surface)!important;border:1px solid var(--ttk-border)!important;
   background:var(--ttk-raised)!important;border-radius:6px!important
 }
-html[data-ttk-theme=porcelain] :is(.menu_button,button:where(:not(#ttk-qr-drawer *,.ttk-tr *)),.right_menu_button,.small_button):hover{
+html[data-ttk-theme=porcelain] :is(.menu_button,button:where(:not(#ttk-qr-drawer *,.ttk-tr *,#ttk-inventory *)),.right_menu_button,.small_button):hover{
   border-color:var(--ttk-accent)!important;box-shadow:inset 0 0 0 1px var(--ttk-border)!important
 }
 html[data-ttk-theme=porcelain] #ttk-panel .ttk-panel-summary,
@@ -1035,4 +1035,81 @@ html[data-ttk-theme=studio] #ttk-qr-drawer .ttk-qr-item {border-radius:999px}
   #ttk-qr-drawer .ttk-qr-row {grid-template-columns:auto auto 1fr;row-gap:2px}
   #ttk-qr-drawer .ttk-qr-row-name {grid-column:1/-1}
   #ttk-qr-drawer .ttk-qr-row .ttk-qr-icon {justify-self:end}
+}
+
+/* v0.7.0 — 통합 조회 */
+#ttk-inventory {
+  --i-surface:var(--ttk-surface,var(--SmartThemeBlurTintColor));--i-raised:var(--ttk-raised,color-mix(in srgb,var(--SmartThemeBodyColor) 8%,transparent));
+  --i-text:var(--ttk-text,var(--SmartThemeBodyColor));--i-muted:var(--ttk-muted,var(--SmartThemeEmColor));
+  --i-line:var(--ttk-border,var(--SmartThemeBorderColor));--i-accent:var(--ttk-accent,var(--SmartThemeQuoteColor));
+  --i-error:#c2413a;--i-warn:#b9770e;--i-info:var(--i-muted);
+  width:min(760px,calc(100vw - 24px));height:min(84vh,820px);max-width:none;max-height:none;padding:0;box-sizing:border-box;
+  border:1px solid var(--i-line);border-radius:14px;background:var(--i-surface);color:var(--i-text);
+  font:14px/1.5 var(--mainFontFamily,sans-serif);text-shadow:none;box-shadow:0 18px 48px rgba(0,0,0,.28);overflow:hidden;
+}
+#ttk-inventory[open] {display:flex;flex-direction:column}
+#ttk-inventory::backdrop {background:rgba(0,0,0,.42)}
+html[data-ttk-scheme=dark] #ttk-inventory {--i-error:#ff8f86;--i-warn:#f0b85a}
+#ttk-inventory button {all:unset;box-sizing:border-box;cursor:pointer;font:inherit;color:inherit}
+#ttk-inventory button:focus-visible,#ttk-inventory input:focus-visible {outline:2px solid var(--i-accent);outline-offset:1px}
+#ttk-inventory .ttk-inv-loading {margin:auto;color:var(--i-muted)}
+#ttk-inventory .ttk-inv-head {display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 12px 8px 16px}
+#ttk-inventory .ttk-inv-title {display:grid}
+#ttk-inventory .ttk-inv-title strong {font-size:17px}
+#ttk-inventory .ttk-inv-title small {color:var(--i-muted);font-size:12px}
+#ttk-inventory .ttk-inv-head-actions {display:flex;align-items:center;gap:6px}
+#ttk-inventory .ttk-inv-btn {padding:7px 12px;border-radius:8px;border:1px solid var(--i-line);background:var(--i-raised);font-weight:600;font-size:13px;white-space:nowrap}
+#ttk-inventory .ttk-inv-btn:hover {border-color:var(--i-accent)}
+#ttk-inventory .ttk-inv-btn:disabled {opacity:.6;cursor:progress}
+#ttk-inventory .ttk-inv-x {width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:8px;color:var(--i-muted)}
+#ttk-inventory .ttk-inv-x:hover {background:var(--i-raised);color:var(--i-text)}
+#ttk-inventory .ttk-inv-tabs {display:flex;gap:2px;padding:0 10px;border-bottom:1px solid var(--i-line);overflow-x:auto;scrollbar-width:none}
+#ttk-inventory .ttk-inv-tab {display:inline-flex;align-items:center;gap:6px;padding:9px 12px;font-weight:600;color:var(--i-muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+#ttk-inventory .ttk-inv-tab[aria-selected=true] {color:var(--i-accent);border-bottom-color:var(--i-accent)}
+#ttk-inventory .ttk-inv-num {font-size:12px;font-weight:600;padding:0 7px;border-radius:999px;background:var(--i-raised);color:var(--i-muted);font-variant-numeric:tabular-nums}
+#ttk-inventory .ttk-inv-num-alert {background:var(--i-error);color:#fff}
+html[data-ttk-scheme=dark] #ttk-inventory .ttk-inv-num-alert {color:#1a1010}
+#ttk-inventory .ttk-inv-body {flex:1;min-height:0;overflow-y:auto;padding:14px 16px 18px;display:grid;gap:10px;align-content:start;overscroll-behavior:contain}
+#ttk-inventory .ttk-inv-note {margin:0;padding:8px 11px;border-radius:8px;border:1px solid var(--i-warn);color:var(--i-warn);font-size:13px}
+#ttk-inventory .ttk-inv-summary {display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+#ttk-inventory .ttk-inv-stat {display:grid;gap:0;padding:10px 12px;border-radius:10px;border:1px solid var(--i-line);background:var(--i-raised)}
+#ttk-inventory .ttk-inv-stat strong {font-size:24px;line-height:1.2;font-variant-numeric:tabular-nums}
+#ttk-inventory .ttk-inv-stat span {font-size:12px;color:var(--i-muted)}
+#ttk-inventory .ttk-inv-stat.ttk-inv-error strong {color:var(--i-error)}
+#ttk-inventory .ttk-inv-stat.ttk-inv-warn strong {color:var(--i-warn)}
+#ttk-inventory .ttk-inv-issue {padding:10px 12px;border-radius:10px;border:1px solid var(--i-line);border-left:4px solid var(--i-info)}
+#ttk-inventory .ttk-inv-issue.ttk-inv-error {border-left-color:var(--i-error)}
+#ttk-inventory .ttk-inv-issue.ttk-inv-warn {border-left-color:var(--i-warn)}
+#ttk-inventory .ttk-inv-issue-top {display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}
+#ttk-inventory .ttk-inv-issue-top strong {font-weight:650;overflow-wrap:anywhere}
+#ttk-inventory .ttk-inv-level {font-size:12px;font-weight:700;color:var(--i-info)}
+#ttk-inventory .ttk-inv-error .ttk-inv-level {color:var(--i-error)}
+#ttk-inventory .ttk-inv-warn .ttk-inv-level {color:var(--i-warn)}
+#ttk-inventory .ttk-inv-area {font-size:12px;color:var(--i-muted);padding:0 7px;border:1px solid var(--i-line);border-radius:999px}
+#ttk-inventory .ttk-inv-issue p {margin:5px 0 0;color:var(--i-muted);font-size:13px;overflow-wrap:anywhere}
+#ttk-inventory .ttk-inv-ok {margin:0;padding:18px 6px;text-align:center;color:var(--i-muted)}
+#ttk-inventory .ttk-inv-foot {margin:6px 0 0;font-size:12px;color:var(--i-muted)}
+#ttk-inventory .ttk-inv-tools {display:flex;gap:8px;align-items:center}
+#ttk-inventory .ttk-inv-search {flex:1;min-width:0;box-sizing:border-box;height:38px;padding:0 12px;border-radius:8px;border:1px solid var(--i-line);background:var(--i-raised);color:var(--i-text);font:inherit;font-size:16px}
+#ttk-inventory .ttk-inv-list {display:grid}
+#ttk-inventory .ttk-inv-row {display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;padding:10px 2px;border-top:1px solid color-mix(in srgb,var(--i-line) 70%,transparent)}
+#ttk-inventory .ttk-inv-row:first-child {border-top:0}
+#ttk-inventory .ttk-inv-row-main {display:grid;min-width:0}
+#ttk-inventory .ttk-inv-row-main strong {font-weight:600;overflow-wrap:anywhere}
+#ttk-inventory .ttk-inv-row-main small {color:var(--i-muted);font-size:12px;overflow-wrap:anywhere}
+#ttk-inventory .ttk-inv-dim .ttk-inv-row-main strong {color:var(--i-muted);font-weight:500}
+#ttk-inventory .ttk-inv-badges {display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+#ttk-inventory .ttk-inv-badge {font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--i-line);color:var(--i-muted);white-space:nowrap}
+#ttk-inventory .ttk-inv-badge-on {border-color:var(--i-accent);color:var(--i-accent);font-weight:600}
+#ttk-inventory .ttk-inv-badge-error {border-color:var(--i-error);color:var(--i-error);font-weight:600}
+#ttk-inventory .ttk-inv-badge-warn {border-color:var(--i-warn);color:var(--i-warn);font-weight:600}
+#ttk-inventory .ttk-inv-sub {grid-column:1/-1;margin:2px 0 0;padding-left:18px;font-size:12.5px;color:var(--i-muted)}
+#ttk-inventory .ttk-inv-sub .ttk-inv-error {color:var(--i-error)}
+#ttk-inventory .ttk-inv-sub .ttk-inv-warn {color:var(--i-warn)}
+html[data-ttk-theme=porcelain] #ttk-inventory {border-radius:8px;box-shadow:0 18px 48px var(--ttk-shadow),inset 0 0 0 3px var(--ttk-surface),inset 0 0 0 4px color-mix(in srgb,var(--ttk-border) 70%,transparent)}
+html[data-ttk-theme=studio] #ttk-inventory {border-radius:20px}
+@media (max-width:1000px) {
+  #ttk-inventory {width:calc(100vw - 12px);height:calc(100dvh - 24px);border-radius:12px}
+  #ttk-inventory .ttk-inv-row {grid-template-columns:minmax(0,1fr)}
+  #ttk-inventory .ttk-inv-badges {justify-content:flex-start}
 }
