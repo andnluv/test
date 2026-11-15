@@ -1113,3 +1113,27 @@ html[data-ttk-theme=studio] #ttk-inventory {border-radius:20px}
   #ttk-inventory .ttk-inv-row {grid-template-columns:minmax(0,1fr)}
   #ttk-inventory .ttk-inv-badges {justify-content:flex-start}
 }
+
+/* ==========================================================================
+   v0.8.0 — 모바일 최적화 (independent of the theme layer: keyed only on data-ttk-opt)
+   ========================================================================== */
+/* effects — blur and shadows are the most expensive paint effects on phones. */
+html[data-ttk-opt~=effects] {--SmartThemeBlurStrength:0px!important;--blurStrength:0!important;--shadowWidth:0!important}
+html[data-ttk-opt~=effects] *,
+html[data-ttk-opt~=effects] *::before,
+html[data-ttk-opt~=effects] *::after {backdrop-filter:none!important;-webkit-backdrop-filter:none!important;text-shadow:none!important}
+html[data-ttk-opt~=effects] :is(#chat .mes,#send_form,#top-bar,#top-settings-holder,.drawer-content,#sheld,.popup,.avatar img,.menu_button) {box-shadow:none!important}
+html[data-ttk-opt~=effects] #chat .mes {filter:none!important}
+/* offscreen — messages outside the viewport skip layout and paint. optimization.js measures each message
+   first and stores its height inline (contain-intrinsic-size), so the scroll position does not jump.
+   The newest message and any message being edited stay fully rendered so menus and editors are never clipped. */
+html[data-ttk-opt~=offscreen] #chat .mes.ttk-cv:not(.last_mes):not(:has(textarea)):not(:focus-within) {content-visibility:auto;flex-shrink:0!important}
+/* #chat is a flex column. A skipped message has no content to hold its height, so without flex-shrink:0 the
+   browser squeezes it to its padding and the scroll length collapses. */
+/* motion */
+html[data-ttk-opt~=motion] *:not(.fa-spin):not(.fa-spinner):not(.fa-pulse):not(.ttk-tr-spin):not(.ttk-tr-busy *),
+html[data-ttk-opt~=motion] *::before,
+html[data-ttk-opt~=motion] *::after {animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important;scroll-behavior:auto!important}
+/* zoom — iOS Safari zooms the page when a focused field is smaller than 16px. */
+html[data-ttk-opt~=zoom] :is(textarea,select,input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]):not([type=button]):not([type=submit])) {font-size:max(16px,1em)!important}
+#ttk-panel .ttk-opt-state:empty {display:none}
